@@ -1,0 +1,30 @@
+/*头部颜色统一*/
+header .mui-icon{
+	color: black !important;
+}
+header{
+	background-color: white !important;
+}
+
+ /*选中后的主色调*/
+.colormain{
+	color: #e50012 !important;
+}
+.backcolormain{
+	color: #e50012 !important;
+}
+html,body{
+	height: 100% !important;
+}
+.mui-pull-top-pocket{
+	top: 0 !important;
+}
+
+
+.mui-popup-text{
+	word-wrap: break-word;
+	text-align: left;
+}
+[v-clock]{
+	display:none;
+}

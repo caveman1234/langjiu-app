@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title></title>
+	<link rel="stylesheet" href="../../css/mui.min.css" />
+	<link rel="stylesheet" href="../../css/icons-extra.css" />
+	<link rel="stylesheet" href="../../css/my.css" />
+
+	<script src="../../script/jquery.min.js"></script>
+	<script src="../../js/summer.min.js"></script>
+	<script src="../../script/mui.min.js"></script>
+	<script src="../../script/vue.js"></script>
+	<script src="../../script/my/common.js"></script>
+	<script src="../../script/axios.js"></script>
+
+	<style>
+		.mui-control-content {
+			height: 100%;
+		}
+
+		.mui-control-item.mui-active {
+			border-bottom: 2px #E7442E solid !important;
+			color: #E7442E !important;
+		}
+
+		html,
+		body {
+			height: 100% !important;
+			font-size: 12px;
+		}
+
+		li.mui-table-view-cell {
+			padding-right: 15px !important;
+		}
+
+		.item {
+			margin-bottom: 10px;
+		}
+
+		.bold {
+			font-weight: bold;
+		}
+	</style>
+</head>
+
+<body>
+	<header id="header" class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-left-nav back"></a>
+		<h1 class="mui-title">
+			<span>我的资产</span>
+		</h1>
+	</header>
+
+	<div id="appDomId" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+		<div class="item">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span class="bold">现金余额</span>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>账面余额：{{xianjinZ | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>可用余额：{{xianjinK | liangweixiaoshu}}</div>
+				</li>
+			</ul>
+		</div>
+		<div class="item">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span class="bold">融资余额</span>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>账面余额：{{rongziZ | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>可用余额：{{rongziK | liangweixiaoshu}}</div>
+				</li>
+			</ul>
+		</div>
+		<div class="item">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span class="bold">费用余额</span>
+					<span @click="itemClick('feiyong')" class="mui-badge mui-badge-primary">查看明细</span>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-row">
+						<div class="mui-col-xs-6 mui-col-sm-6" v-clock>账面余额：{{feiyongZ | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-6 mui-col-sm-6" v-clock>可用余额：{{feiyongK | liangweixiaoshu}}</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-row">
+						<div class="mui-col-xs-4 mui-col-sm-4">小郎酒</div>
+						<div class="mui-col-xs-4 mui-col-sm-4">郎牌特区</div>
+						<div class="mui-col-xs-4 mui-col-sm-4">青花郎</div>
+					</div>
+					<div class="mui-row">
+						<div class="mui-col-xs-4 mui-col-sm-4" v-clock>{{feiyongX | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-4 mui-col-sm-4" v-clock>{{feiyongL | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-4 mui-col-sm-4" v-clock>{{feiyongQ | liangweixiaoshu}}</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="item">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span class="bold">直投余额</span>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-col-xs-6 mui-col-sm-6">账面余额：{{zhitouZ | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6">可用余额：{{zhitouK | liangweixiaoshu}}</div>
+				</li>
+			</ul>
+		</div>
+		<div class="item">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span class="bold">共建基金余额</span>
+					<span @click=itemClick('gong')  class="mui-badge mui-badge-primary">查看明细</span>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-row">
+						<div class="mui-col-xs-6 mui-col-sm-6" v-clock>余额：{{gongT | liangweixiaoshu}}</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-row">
+						<div class="mui-col-xs-4 mui-col-sm-4">小郎酒</div>
+						<div class="mui-col-xs-4 mui-col-sm-4">郎牌特区</div>
+						<div class="mui-col-xs-4 mui-col-sm-4">青花郎</div>
+					</div>
+					<div class="mui-row">
+						<div class="mui-col-xs-4 mui-col-sm-4" v-clock>{{gongX | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-4 mui-col-sm-4" v-clock>{{gongL | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-4 mui-col-sm-4" v-clock>{{gongQ | liangweixiaoshu}}</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="item">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span class="bold">保证金余额</span>
+				</li>
+				<li class="mui-table-view-cell mui-row">
+					<div class="mui-row">
+						<div class="mui-col-xs-6 mui-col-sm-6" v-clock>余额：{{baoT | liangweixiaoshu}}</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>
+<script>
+	var app = new Vue({
+		el: "#appDomId",
+		data: function () {
+			return {
+				xianjinZ: 0,
+				xianjinK: 0,
+
+				rongziZ: 0,
+				rongziK: 0,
+
+				feiyongZ: 0,
+				feiyongK: 0,
+				feiyongX: 0,
+				feiyongL: 0,
+				feiyongQ: 0,
+				feiyongDetail: [],
+
+				zhitouZ: 0,
+				zhitouK: 0,
+
+				gongT: 0,
+				gongX: 0,
+				gongL: 0,
+				gongQ: 0,
+				gongDetail: [],
+
+				baoT: 0,
+			}
+		},
+		methods: {
+			itemClick: function (obj) {
+
+				switch (obj) {
+					case "feiyong":
+						summer.openWin({
+							id: "feiyongyue",
+							url: "html/zichan/feiyongyue.html",
+							pageParam: {
+								data: app.feiyongDetail
+							}
+						});
+						break;
+					case "gong":
+						summer.openWin({
+							id: "gongjianjijingyue",
+							url: "html/zichan/gongjianjijingyue.html",
+							pageParam: {
+								data: app.gongDetail
+							}
+						});
+						break;
+				}
+			},
+			fetchData: function (customerId) {
+				var customerId = customerId;
+				//-----------------------------现金余额---------------------------------
+				////账面余额
+				doPost("/ocm-web/api/b2b/query-balance-mobile/queryCashReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					app.xianjinZ = data;
+				}, function (dat) { }, false);
+				//可用余额
+				doPost("/ocm-web/api/b2b/query-balance-mobile/getCashReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					app.xianjinK = data;
+				}, function (dat) { }, false);
+				// //-----------------------------融资余额---------------------------------
+				doPost("/ocm-web/api/b2b/query-balance-mobile/queryFinancingReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					app.rongziZ = data.reserve;
+					app.rongziK = data.balance;
+				}, function (dat) { }, false);
+				// //-----------------------------费用余额---------------------------------
+				doPost("/ocm-web/api/b2b/query-balance-mobile/queryChargeReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					var alltotal = data.reduce(function(acc,v){
+						return acc + v.total
+					},0);
+
+					var feiyongX = data.filter(function(v){
+						return v.syb === "022102"
+					})
+					var feiyongL = data.filter(function(v){
+						return v.syb === "021502"
+					})
+					var feiyongQ = data.filter(function(v){
+						return v.syb === "020301"
+					})
+					app.feiyongDetail = data;
+					app.feiyongZ = alltotal;
+					app.feiyongX = feiyongX.length > 0 ? feiyongX[0].eReserve + feiyongX[0].qReserve + feiyongX[0].fReserve : 0;
+					app.feiyongL = feiyongL.length > 0 ? feiyongL[0].eReserve + feiyongL[0].qReserve + feiyongL[0].fReserve : 0;
+					app.feiyongQ = feiyongQ.length > 0 ? feiyongQ[0].eReserve + feiyongQ[0].qReserve + feiyongQ[0].fReserve : 0;
+				}, function (dat) { }, false);
+				// //可用余额
+				doPost("/ocm-web/api/b2b/query-balance-mobile/getChargeReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					//计算总金额
+					var alltotal = data.reduce(function(acc,v){
+						return acc + v.actualReserve;
+					},0);
+					app.feiyongK = alltotal;
+				}, function (dat) { }, false);
+				// //-----------------------------直投余额---------------------------------
+				doPost("/ocm-web/api/b2b/query-balance-mobile/queryBorrowWineReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					app.zhitouK = data.balance;
+					app.zhitouZ = data.reserve;
+				}, function (dat) { }, false);
+				// //-----------------------------共建基金余额---------------------------------
+				doPost("/ocm-web/api/b2b/query-balance-mobile/queryFundReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					alert(JSON.stringify(data))
+					app.gongDetail = data;
+					//计算总金额
+					var alltotal = data.reduce(function(acc,v){
+						return acc + v.total;
+					},0);
+					app.gongT = alltotal;
+
+					var gongX = data.filter(function(v){
+						return v.syb === "0215"
+					})
+					var gongL = data.filter(function(v){
+						return v.syb === "0216"
+					})
+					var gongQ = data.filter(function(v){
+						return v.syb === "0212"
+					})
+					app.gongX = gongX.length > 0 ? gongX[0].xReserve + gongX[0].fReserve : 0;
+					app.gongL = gongL.length > 0 ? gongL[0].xReserve + gongL[0].fReserve : 0;
+					app.gongQ = gongQ.length > 0 ? gongQ[0].xReserve + gongQ[0].fReserve : 0;
+
+				}, function (dat) { }, false);
+				// //-----------------------------保证金余额---------------------------------
+				doPost("/ocm-web/api/b2b/query-balance-mobile/queryDepositReserve?customerId=" + customerId, {
+					customerId: customerId
+				}, function (data) {
+					app.baoT = data;
+				}, function (dat) { }, false);
+			}
+		},
+		filters: {
+			liangweixiaoshu: function (value) {
+				return (value || 0).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+			},
+			buyaoshiyebu: function (value) {
+				return value.replace("事业部", "");
+			}
+		},
+		mounted: function () {
+
+		}
+	});
+
+
+	summerready = function () {
+		readStorage("dengluCookie", function (cook) {
+			var customerId = cook.customerId
+			//"171b88f4-b36b-4335-b756-0666acc41008"
+			app.fetchData("171b88f4-b36b-4335-b756-0666acc41008")
+
+		})
+
+	}
+</script>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+	</head>
+
+	<body style="background-color: #ffffff;">
+		<header id="header" class="mui-bar mui-bar-nav lookPhoto">
+			<a class="mui-icon mui-icon-left-nav back"></a>
+			<h1 class="mui-title">
+				<span>消息通知</span>
+			</h1>
+		</header>
+		<div id="body" class="mui-content" style="height: 100%;background-color: #ffffff;">
+			<div style="padding: 10px;width: 100%;">
+				<p style="font-size: 19px;color: #000000;margin-top: 20px;">
+					<strong>{{data.title}}</strong>
+				</p>
+				<p style="margin-bottom: 1px;font-size: 15px;color: #666666;margin-top: 20px;"></p>
+				<p style="font-size: 11px;color: #999999;">{{data.creationTime | riqizhuanhuan}}</p>
+				<p v-for="x in data.files">
+					<a v-on:click="doanFile(x)">{{x.filename}}</a>
+				</p>
+				<div id="imagecontent" v-html="contentfilters(data.content)" style="font-size: 15px;color: #000000;letter-spacing: 0.58px;line-height: 27px;margin-top: 20px;">
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	var app = new Vue({
+		el: "#body",
+		data: {
+			data: {
+				files:[]
+			}
+		},
+		methods: {
+			contentfilters: function(value) { //content过滤
+				try{
+					return value.replace(/\n/g, "<br/>").replace(/<pre>/g, "").replace(/<\/pre>/g, "");
+				}catch(e){return value;}
+			},doanFile:function(datas){
+//				 {
+//                  "filename":"民生银行操作手册.docx",
+//                  "filepath":"9a4e0395-5435-4308-9b88-e21ba36d7364",
+//                  "id":"2dNDdOX5XHrshq4bfNp",
+//                  "filesize":"653753",
+//                  "groupname":"ygdemo",
+//                  "url":"/g1/M00/00/01/rBMrilpbS7OAfZV9AAn5ubve_W038.docx",
+//                  "uploadtime":"2018-01-14 20:23:15",
+//                  "absoluteUrl":"http://c.langjiu.cn/g1/M00/00/01/rBMrilpbS7OAfZV9AAn5ubve_W038.docx"
+//              }
+				openwebview(datas.absoluteUrl);
+//				downFile(datas.absoluteUrl,datas.filename,function(args){
+//					if(args.isfinish){
+//				        //toast(datas.filename+"下载成功"); //多次回调，用于进度条提示
+//				        openFile(args.filename,args.filename.substring(args.filename.lastIndexOf(".")+1),args.filepath);
+//				    }
+//				});
+			},
+			fetchContent:function(id){
+				var url = "/ocm-web/api/notice/queryById?id=" + id;
+				var successFun = function(data){
+					app.data = data;
+				}
+				var errorFun = function(){}
+				doPost(url,"",successFun,errorFun,true,"get")
+			}
+		},filters:{
+			riqizhuanhuan:function(value){
+				if(value == "null" || value == null || value == undefined){
+					return "-";
+				}
+				var date = new Date(value);
+				return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+			}
+		}
+	})
+	summerready = function(){
+		app.data = summer.pageParam;
+		app.fetchContent(app.data.id);
+	}
+</script>

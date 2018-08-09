@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<style>
+			.actives{
+				opacity:1 !important
+			}
+			.actives>span{
+				font-weight: 700;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-icon-left-nav back"></a>
+			<h1 class="mui-title">
+				<span>费用余额</span>
+			</h1>
+		</header>
+		<div id="body" class="mui-content" style="height: 100%;">
+			<div>
+				<div style="background-color: #6585E6;padding: 30px 20px;padding-bottom: 0;">
+					<p style="text-align: center;font-size: 28px;color: #FFFFFF;margin: 15px 0px 20px 0px;">28445.22<small>元</small></p>
+					<div style="float: left;width: 33.3%;text-align: left;opacity: 0.6;" v-bind:class="{'actives':selectindex == 0}" v-on:click="check(0)">
+						<span style="font-size: 14px;color: #FFFFFF;">小郎酒</span>
+						<div style="font-size: 18px;color: #FFFFFF;margin-top: 10px;">8722.33<small>元</small></div>
+						<p v-show="selectindex == 0">
+							<img src="../../image/sanjiaoxing.png" style="margin-bottom: -20px;width: 22%;" />
+						</p>
+					</div>
+					<div style="float: left;width: 33.3%;text-align: center;opacity: 0.6;" v-bind:class="{'actives':selectindex == 1}" v-on:click="check(1)">
+						<span style="font-size: 14px;color: #FFFFFF;">红花郎</span>
+						<div style="font-size: 18px;color: #FFFFFF;margin-top: 10px;">18742.32<small>元</small></div>
+						<p v-show="selectindex == 1">
+							<img src="../../image/sanjiaoxing.png" style="margin-bottom: -20px;width: 22%;" />
+						</p>
+					</div>
+					<div style="float: left;width: 33.3%;text-align: right;opacity: 0.6;" v-bind:class="{'actives':selectindex == 2}" v-on:click="check(2)">
+						<span style="font-size: 14px;color: #FFFFFF;">郎牌特曲</span>
+						<div style="font-size: 18px;color: #FFFFFF;margin-top: 10px;">980.57<small>元</small></div>
+						<p v-show="selectindex == 2">
+							<img src="../../image/sanjiaoxing.png" style="margin-bottom: -20px;width: 22%;" />
+						</p>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+				<div style="background-color: #FFFFFF;font-size: 18px;">
+					<div style="float: left;width: 33.3%;text-align: center;margin-top: 20px;">
+						<div style="color: #999999;">E类</div>
+						<div style="color: #333333;padding: 10px;">2344.00</div>
+					</div>
+					<div style="float: left;width: 33.3%;text-align: center;margin-top: 20px;">
+						<div style="color: #999999;">Q类</div>
+						<div style="color: #333333;padding: 10px;">3522.21</div>
+					</div>
+					<div style="float: left;width: 33.3%;text-align: center;margin-top: 20px;">
+						<div style="color: #999999;">F类</div>
+						<div style="color: #333333;padding: 10px;">2856.12</div>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+			<div style="margin-top: 10px; background-color: #FFFFFF;overflow-y:scroll;">
+				<div style="position: relative;width: 100%;height: 100%;">
+					<!--下拉刷新容器-->
+					<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" style="color: #999999;font-size: 14px;padding: 10px 0px;">
+								<li style="padding: 0px 10px;">
+									<div style="color: #999999;padding: 10px;">
+										<span>单据</span>
+										<span style="float: right;">金额</span>
+									</div>
+								</li>
+								<li class="mui-table-view-cell" style="padding: 0;padding: 0px 10px;">
+									<div style="padding-top: 10px;padding-bottom: 10px;">
+										<p style="color: #333333;font-size: 16px;padding-left: 10px;padding-right: 10px;margin: 3;">
+											<span>购买进货</span>
+											<span style="float: right;">-1200.00</span>
+										</p>
+										<p style="color: #999999;font-size: 13px;padding-left: 10px;padding-right: 10px;line-height: 14px;padding-top: 5px;">
+											<span>2017-11-11</span>
+											<span style="float: right;">4800.00</span>
+										</p>
+									</div>
+								</li>
+								<li class="mui-table-view-cell" style="padding: 0;padding: 0px 10px;">
+									<div style="padding-top: 10px;padding-bottom: 10px;">
+										<p style="color: #333333;font-size: 16px;padding-left: 10px;padding-right: 10px;margin: 3;">
+											<span>购买进货</span>
+											<span style="float: right;">-1000.00</span>
+										</p>
+										<p style="color: #999999;font-size: 13px;padding-left: 10px;padding-right: 10px;line-height: 14px;padding-top: 5px;">
+											<span>2017-11-10</span>
+											<span style="float: right;">6000.00</span>
+										</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	var app = new Vue({
+		el: "#body",
+		data: {
+			selectindex:0,
+			pageAll: {
+				pageindex: 0,
+				allDate: [],
+			}
+		},
+		methods: {
+			check:function(i){
+				this.selectindex = i;
+			},
+			pageAllDown: function(fun) {
+				setTimeout(function() {
+					app.pageAll.allDate = [{
+						docName: "12841267217421412",
+						tg: '未通过',
+						sp: [{
+								mz: "郎酒好好好",
+								tc: "53",
+								sl: "50",
+								jg: "213123.11"
+							},
+							{
+								mz: "郎酒好好好222",
+								tc: "53",
+								sl: "50",
+								jg: "213123.11"
+							}
+						],
+					}];
+					fun();
+				}, 1000);
+			},
+			pageAllUp: function(fun) {
+				setTimeout(function() {
+					if(this.pageindex == 0) {
+						app.pageAll.allDate = [{
+							docName: "12841267217421412",
+							tg: '未通过',
+							sp: [{
+									mz: "郎酒好好好",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								},
+								{
+									mz: "郎酒好好好222",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								}
+							],
+						}];
+					} else {
+						app.pageAll.allDate.push({
+							docName: "12841267217421412",
+							tg: '未通过',
+							sp: [{
+									mz: "郎酒好好好",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								},
+								{
+									mz: "郎酒好好好222",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								}
+							],
+						});
+					}
+					fun();
+				}, 1000);
+			}
+		}
+	});
+</script>
+
+<script>
+	mui('.mui-scroll-wrapper').scroll({
+		indicators: true //是否显示滚动条
+	});
+
+	mui.init({
+		swipeBack: false, //未知属性
+		pullRefresh: {
+			container: '#pageAllrongqi',
+			down: {
+				style: 'circle',
+				callback: function() {
+					app.pageAllDown(function() {
+						mui('#pageAllrongqi').pullRefresh().endPulldownToRefresh();
+					});
+				}
+			},
+			up: {
+				auto: true,
+				contentrefresh: '正在加载...',
+				callback: function() {
+					app.pageAllUp(function() {
+						mui('#pageAllrongqi').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					});
+				}
+			}
+		}
+	});
+</script>

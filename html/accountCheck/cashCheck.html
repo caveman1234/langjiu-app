@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<script src="../../script/mui.picker.min.js"></script>
+		<style>
+			.mui-media-body {
+				margin-top: 1px !important;
+			}
+			
+			
+		</style>
+	</head>
+ 
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav header">
+			<a class="mui-icon mui-icon-left-nav back"></a>
+			<h1 class="mui-title">
+				<span>现金对账</span>
+			</h1>
+		</header>
+		<div id="body" class="mui-content content">
+	        <ul class="mui-table-view" style="margin-top: 0;">
+			    <li class="mui-table-view-cell">
+			    	<div class="mui-row">
+			    		<div @tap="startDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;">开始日期:{{startDate}}</div>
+			    		<div @tap="endDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;">结束日期:{{endDate}}</div>
+			    		<div @tap="fetchData" class="mui-col-xs-2 mui-col-sm-2" style="font-size:12px; text-align: right;">
+			    			<i class="mui-icon mui-icon-search" style="position: absolute;top: -2px;right: -5px;"></i>
+			    		</div>
+			    	</div>
+				</li>
+			</ul>
+			
+			
+			
+			<div id="pageAllrongqi" class="mui-content">
+				<div class="mui-scroll" style="box-shadow: 0px 0px 0px 0px  !important;">
+					<!--数据列表-->
+					<ul class="mui-table-view mui-table-view-chevron list1" style="background-color: #efeff4;-webkit-margin-before:0em;">
+						<li v-for="(item,index) in tableData" :key="index" style="background-color: white;margin-top: 10px;">
+							<div style="padding:15px;border-bottom: #E6E6E6 1px solid;font-size: 13px;">
+								<span style="color: black;">单据号:{{item.billcode || "无"}}</span>
+							</div>
+							<div style="padding:8px 15px;font-size: 13px;">
+								<span style="color: #999999;">日期</span>
+								<span style="float: right;font-size: 14px;color: #000000 ;">{{item.dbilldate}}</span>
+							</div>
+							<div style="padding:8px 15px;font-size: 13px;">
+								<span style="color: #999999;">摘要</span>
+								<span style="float: right;font-size: 14px;color: #000000 ;">{{item.memo}}</span>
+							</div>
+							<div style="padding:8px 15px;font-size: 13px;">
+								<span style="color: #999999;">收入</span>
+								<span v-green style="float: right;font-size: 14px;color: #000000 ;">{{item.income | formatInOut}}</span>
+							</div>
+							<div style="padding:8px 15px;font-size: 13px;">
+								<span style="color: #999999;">支出</span>
+								<span v-red style="float: right;font-size: 14px;color: #000000 ;">{{item.cost | formatInOut}}</span>
+							</div>
+							<div style="padding:8px 15px;font-size: 13px;">
+								<span style="color: #999999;">余额</span>
+								<span v-green style="float: right;font-size: 14px;color: #000000 ;">{{item.amount | formatInOut}}</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	var currentDate = new Date().getTime();
+	var startDate = new Date(currentDate - 30*24*60*60*1000);
+	var endDate = new Date(currentDate);
+	var startDateStr = startDate.getFullYear() + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate();
+	var endDateStr = endDate.getFullYear() + "-" + (endDate.getMonth()+1) + "-" + endDate.getDate();
+	var app = new Vue({
+		el: "#body",
+		data: function(){
+			return {
+				tableData:[],
+				startDate:startDateStr,
+				endDate:endDateStr,
+			}
+		},
+		methods: {
+			fetchData:function(){
+				var _this = this;
+				readStorage("dengluCookie",function(cook){
+					var params = {
+						customerId:cook.customerId,
+						apprDateBegin:_this.startDate && new Date(_this.startDate).getTime(),
+						apprDateEnd:_this.endDate && new Date(_this.endDate).getTime()
+					};
+					params = Object.keys(params)
+						.reduce(function(acc,key){
+							if(params[key]){
+								acc[key] = params[key];
+							}
+							return acc;
+						},{});
+					var url = "/ocm-web/api/b2b/query-balance/queryCashDetail";
+					var successFun = function(data){
+						data.shift();
+						_this.tableData = data;
+					};
+					var errorFun = function(){};
+					doPost(url,params,successFun,errorFun,true,"get");
+				});
+				
+			},
+			startDateFun:function(){
+				var _this = this;
+				var beginDate = null;
+				var endDate = null;
+				if(_this.endDate){
+					endDate = _this.endDate;
+				}
+				var dtPicker = new mui.DtPicker({
+					type:"date",
+					beginDate: beginDate&&new Date(beginDate),
+					endDate: endDate && new Date(endDate)
+				});
+				dtPicker.show(function(obj){
+					_this.startDate = obj.value
+					console.log(obj)
+				}); 
+			},
+			endDateFun:function(){
+				var _this = this;
+				var beginDate = null;
+				var endDate = null;
+				if(_this.startDate){
+					beginDate = _this.startDate;
+				}
+				var dtPicker = new mui.DtPicker({
+					type:"date",
+					beginDate: beginDate && new Date(beginDate),
+					endDate: endDate && new Date(endDate),
+				});
+				dtPicker.show(function(obj){
+					_this.endDate = obj.value
+					console.log(obj)
+				}); 
+			}
+
+		},
+		mounted:function(){
+			
+		},
+		filters:{
+			formatInOut:function(value){
+				if (value === null || value === '' || value === undefined) {
+			        return '';
+			    }
+			    if (value === 0) {
+			        return '¥0.00';
+			    }
+			    value = String(Number(value).toFixed(2));
+			    var str = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+			    return '¥' + str;
+			}
+		},
+		directives:{
+			grey:{
+				inserted:function(el){
+					el.style.color = "rgb(191, 191, 191)"
+				}
+			},
+			red:{
+				inserted:function(el){
+					el.style.color = "red"
+				}
+			},
+			green:{
+				inserted:function(el){
+					el.style.color = "green"
+				}
+			}
+		}
+	
+	});
+
+	summerready = function() {
+		app.fetchData();
+		
+		
+	}
+</script>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+		<link rel="stylesheet" href="./notReadMsg.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<style>
+			::-webkit-input-placeholder {
+				font-size: 12px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="body" style="height: 100%;">
+			<header id="header" class="mui-bar mui-bar-nav lookPhoto">
+				<a class="mui-icon mui-icon-left-nav back"></a>
+				<h1 class="mui-title">
+					<span>未读消息</span>
+				</h1>
+			</header>
+			<div v-if="notReadMsg.length === 0" class="noMessage">无消息</div>
+		    <div v-for="item in notReadMsg.filter(function(v){return v.contentType === 2})" class="msgContainer">
+		      <template v-if="item.contentType === 2">
+		        <div class="msgTitle">
+		          <span class="userName">客服人员</span>
+		          <span class="time">{{item.dateline | formatDateTime}}</span>
+		        </div>
+		        <div class="msgContent" v-html="item.content.content"></div>
+		      </template>
+		      <template v-if="item.contentType === 4">
+		        <div class="msgTitle">
+		          <span class="userName">{{item.from.slice(0,5)}}</span>
+		          <span class="time">{{item.dateline | formatDateTime}}</span>
+		        </div>
+		        <div class="msgContent" v-html="item.content.content">
+		          
+		        </div>
+		      </template>
+		    </div>
+		</div>
+	</body>
+
+</html>
+
+<script>
+	var tempData = [{"content":{"content":"o-- <div>dfsdf</div>"},"contentType":2,"dateline":1531118402406,"from":"7dfc168ffc374745922343707e1c2509.imtest01.yonyou@im.yyuap.com/web-v2.6","id":"3CE3A373-9BE0-4C95-B993-A5F67221336C","packetVersion":935,"receipts":true,"sessionVersion":64,"to":"000000.imtest01.yonyou@im.yyuap.com","type":"chat"},{"content":{"content":"u"},"contentType":2,"dateline":1531118400778,"from":"7dfc168ffc374745922343707e1c2509.imtest01.yonyou@im.yyuap.com/web-v2.6","id":"28A24D4A-735C-464A-A9E3-60B9AE45BDFD","packetVersion":934,"receipts":true,"sessionVersion":63,"to":"000000.imtest01.yonyou@im.yyuap.com","type":"chat"},{"content":{"content":"t"},"contentType":2,"dateline":1531118398409,"from":"7dfc168ffc374745922343707e1c2509.imtest01.yonyou@im.yyuap.com/web-v2.6","id":"32D36818-0ACF-414A-A50A-719E017E8797","packetVersion":933,"receipts":true,"sessionVersion":62,"to":"000000.imtest01.yonyou@im.yyuap.com","type":"chat"},{"content":{"content":"rr"},"contentType":2,"dateline":1531117961511,"from":"7dfc168ffc374745922343707e1c2509.imtest01.yonyou@im.yyuap.com/web-v2.6","id":"D527F0CE-A01D-48B4-9F7A-1C8C060BC455","packetVersion":932,"receipts":true,"sessionVersion":61,"to":"000000.imtest01.yonyou@im.yyuap.com","type":"chat"},{"content":{"content":"11"},"contentType":2,"dateline":1531116615191,"from":"7dfc168ffc374745922343707e1c2509.imtest01.yonyou@im.yyuap.com/web-v2.6","id":"014CC00B-6B1E-42F3-A2DB-0DB8642AE978","packetVersion":931,"receipts":true,"sessionVersion":60,"to":"000000.imtest01.yonyou@im.yyuap.com","type":"chat"}]
+	var app = new Vue({
+		el:"#body",
+		data:function(){
+			return {
+				notReadMsg:[]
+			}
+		},
+		filters: {
+        'formatDateTime': function (value) {
+          if (!value) return '';
+          var date = new Date(value);
+          var year = date.getFullYear();
+          var month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+          var day = (date.getDate() + 1) < 10 ? '0' + (date.getDate()) : (date.getDate());
+          var hours = (date.getHours() + 1) < 10 ? '0' + (date.getHours()) : (date.getHours());
+          var minutes = (date.getMinutes() + 1) < 10 ? '0' + (date.getMinutes()) : (date.getMinutes());
+          var seconds = (date.getSeconds() + 1) < 10 ? '0' + (date.getSeconds()) : (date.getSeconds());
+          var formatDate = [year, month, day];
+          var formatTime = [hours, minutes, seconds];
+          return formatDate.join('/') + " "+ formatTime.join(':');
+        }
+      },
+	});
+</script>
+
+<script>
+	summerready = function() {
+		
+		var notReadMsg = summer.pageParam.notReadMsg;
+		notReadMsg = JSON.parse(JSON.stringify(notReadMsg));
+		app.notReadMsg = summer.pageParam.notReadMsg || [];
+		
+			
+	}
+</script>

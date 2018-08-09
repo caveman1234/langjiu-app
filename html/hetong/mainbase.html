@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<style>
+			.mui-progressbar,
+			.mui-progressbar>span {
+				height: 13px !important;
+				border-radius: 20px;
+			}
+			
+			.mui-progressbar {
+				background-color: #F0F0F0 !important;
+			}
+			
+			.mui-progressbar>span {
+				background-color: #19AFFF !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-icon-left-nav back"></a>
+			<h1 class="mui-title">
+					<span>合同执行情况</span>
+				</h1>
+		</header>
+		<div id="body" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+			<div style="width: 100%;height: 100%;position: relative;">
+				<!--下拉刷新容器-->
+				<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<!--数据列表-->
+						<ul class="mui-table-view mui-table-view-chevron list1" style="margin: 0px 15px 15px 15px;background-color: #efeff4;">
+							<li v-for="x in pageAll.allDate" style="margin-top: 20px;background-color: #ffffff;">
+								<div style="margin-top:20px;">
+									<div style="padding: 10px;">
+										<div style="font-size: 16px;color: #333333;">
+											2017年合同量:10000000.00元
+										</div>
+										<p style="padding: 8px 0px 8px 0px;">
+											<span>达成量：￥8311000.00元</span>
+											<span style="float: right;">达成率83.11%</span>
+										</p>
+										<p class="mui-progressbar mui-progressbar-in" data-progress="20"><span style="transform: translate3d(-16.89%, 0px, 0px);"></span></p>
+									</div>
+									<img src="../../image/xiangyaozhang.png" style="width: 100%;background-color: #efeff4;" />
+									<div style="padding: 10px;">
+										<p style="color: #333333;">小郎酒事业部</p>
+										<p style="color: #333333;">合同量:6000000.00元</p>
+										<p>
+											<span>达成量:￥5181000.00元</span>
+											<span style="float: right;">达成率:86.35%</span>
+										</p>
+									</div>
+									<div style="padding: 10px;border-top:1px dashed #efeff4;">
+										<p>45度小郎酒</p>
+										<p>合同量:6000000.00元</p>
+										<p>
+											<span>达成量:￥5181000.00元</span>
+											<span style="float: right;">达成率:86.35%</span>
+										</p>
+									</div>
+									<img src="../../image/xiangmozhang_small.png" style="width: 100%;background-color: #efeff4;" />
+									<div style="padding: 10px;">
+										<p style="color: #333333;">郎牌特曲事业部</p>
+										<p style="color: #333333;">合同量:4000000.00元</p>
+										<p>
+											<span>达成量:￥3130000元</span>
+											<span style="float: right;">达成率:78.25%</span>
+										</p>
+									</div>
+									<div style="padding: 10px;border-top:1px dashed #efeff4;">
+										<p>郎牌特曲精英版T9</p>
+										<p>合同量:￥4000000元</p>
+										<p>
+											<span>达成量:￥3130000元</span>
+											<span style="float: right;">达成率:78.25%</span>
+										</p>
+									</div>
+								</div>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+
+<script>
+	var app = new Vue({
+		el: "#body",
+		data: {
+			pageAll: {
+				pageindex: 0,
+				allDate: [],
+			}
+		},
+		methods: {
+			pageAllDown: function(fun) {
+				setTimeout(function() {
+					app.pageAll.allDate = [{
+						docName: "12841267217421412",
+						tg: '未通过',
+						sp: [{
+								mz: "郎酒好好好",
+								tc: "53",
+								sl: "50",
+								jg: "213123.11"
+							},
+							{
+								mz: "郎酒好好好222",
+								tc: "53",
+								sl: "50",
+								jg: "213123.11"
+							}
+						],
+					}, {
+						docName: "12841267217421412",
+						tg: '未通过',
+						sp: [{
+								mz: "郎酒好好好",
+								tc: "53",
+								sl: "50",
+								jg: "213123.11"
+							},
+							{
+								mz: "郎酒好好好222",
+								tc: "53",
+								sl: "50",
+								jg: "213123.11"
+							}
+						],
+					}];
+					fun();
+				}, 1000);
+			},
+			pageAllUp: function(fun) {
+				setTimeout(function() {
+					if(this.pageindex == 0) {
+						app.pageAll.allDate = [{
+							docName: "12841267217421412",
+							tg: '未通过',
+							sp: [{
+									mz: "郎酒好好好",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								},
+								{
+									mz: "郎酒好好好222",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								}
+							],
+						}];
+					} else {
+						app.pageAll.allDate.push({
+							docName: "12841267217421412",
+							tg: '未通过',
+							sp: [{
+									mz: "郎酒好好好",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								},
+								{
+									mz: "郎酒好好好222",
+									tc: "53",
+									sl: "50",
+									jg: "213123.11"
+								}
+							],
+						});
+					}
+					fun();
+				}, 1000);
+			}
+		}
+	});
+</script>
+<script>
+	mui('.mui-scroll-wrapper').scroll({
+		indicators: true //是否显示滚动条
+	});
+
+	mui.init({
+		swipeBack: false, //未知属性
+		pullRefresh: {
+			container: '#pageAllrongqi',
+			down: {
+				style: 'circle',
+				callback: function() {
+					app.pageAllDown(function() {
+						mui('#pageAllrongqi').pullRefresh().endPulldownToRefresh();
+					});
+				}
+			},
+			up: {
+				auto: true,
+				contentrefresh: '正在加载...',
+				callback: function() {
+					app.pageAllUp(function() {
+						mui('#pageAllrongqi').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					});
+				}
+			}
+		}
+	});
+</script>

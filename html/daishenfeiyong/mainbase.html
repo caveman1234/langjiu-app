@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<style>
+			::-webkit-input-placeholder {
+				font-size: 12px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="body" style="height: 100%;">
+			<header class="mui-bar mui-bar-nav" style="background-color: #f75c47 !important;box-shadow: 0 0 0 ;">
+				<a class="mui-icon mui-icon-left-nav back"></a>
+				<h1 class="mui-title">
+					<div style="height: 44px;">
+						<div style="padding: 5px;background-color: #F0F0F0;height: 30px;vertical-align: middle;display: inline-block;width: 80%;border-radius: 9px;margin: 0px auto;">
+							<div style="width: 100%;vertical-align: middle;height: 100%;line-height: 13px;">
+								<span class="mui-icon mui-icon-search" style="vertical-align: middle;color: #BFBFBF !important;"></span>
+								<input type="text" v-model="selectCode" placeholder="订单号查询" style="background-color: transparent;line-height: 11px;height: 20px;border: 0px;font-size: 13px;vertical-align: middle;padding: 0px;margin: 0px;" />
+							</div>
+						</div>
+					</div>
+				</h1>
+			</header>
+			<div class="mui-content" style="height: 100%;">
+				<div style="background-color: #f75c47;color: white;padding: 30px 20px; height: 400px;">
+					<p style="font-size: 27px;color: #FFFFFF;">待审总金额  {{title.a}}<span style="font-size: 13px;">元</span></p>
+				</div>
+
+				<div style="position:absolute;width: 100%;top: 130px;bottom: 0px;box-shadow: 0px -1px 13px 1px #a34b4b;">
+					<!--下拉刷新容器-->
+					<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper">
+						<div class="mui-scroll" style="box-shadow: 0px 0px 0px 0px  !important;">
+							<!--数据列表-->
+							<ul class="mui-table-view mui-table-view-chevron list1" style="background-color: #efeff4;-webkit-margin-before:0em;">
+								<li v-for="x in quanbudingdan.data" style="background-color: white;margin-top: 10px;">
+									<div style="padding:15px;border-bottom: #E6E6E6 1px solid;font-size: 13px;">
+										<span style="color: black;">报销单号:{{x.billcode}}</span>
+										<span style="float: right;color: #E7442E;padding-right: 5px !important;">{{x.billStatus | zhuangtai}}</span>
+									</div>
+									<div style="padding:8px 15px;font-size: 13px;">
+										<span style="color: #999999;">单据日期</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.dbilldate}}</span>
+									</div>
+									<div style="padding:8px 15px;font-size: 13px;">
+										<span style="color: #999999;">事业部名称</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.syb}}</span>
+									</div>
+									<div style="padding:8px 15px;font-size: 13px;">
+										<span style="color: #999999;">金额</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.amount | liangweixiaoshu}}元</span>
+									</div>
+									<div style="padding:8px 15px;font-size: 13px;">
+										<span style="color: #999999;">联盟商名称</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.lmsname}}</span>
+									</div>
+									<div style="padding:8px 15px;font-size: 13px;">
+										<span style="color: #999999;">摘要</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.memo}}</span>
+									</div>
+								</li>
+
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+
+<script>
+	var app = new Vue({
+		el: "#body",
+		data: {
+			selectCode: "",
+			quanbudingdan: {
+				pageindex: -1,
+				data: [],
+			},title:{
+				a:0
+			}
+		},
+		methods: {
+			//下拉上拉
+			quanbudingdanDown: function(fun) {
+				app.SelectList(0, function() {
+					fun();
+				});
+			},
+			quanbudingdanUp: function(fun) {
+				app.SelectList(app.quanbudingdan.pageindex + 1, function() {
+					fun();
+				});
+			},
+			SelectList: function(ind, fun) { //请求某一类型的指定page
+				readStorage("dengluCookie", function(cook) {
+					//请求服务器
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryUnApproveCharge", {
+						customerId: cook.customerId,
+						page: ind,
+						size: 5,
+						billcode: app.selectCode,
+						dbilldateBegin: "",
+						dbilldateEnd: "",
+					}, function(data) {
+						fun();
+						//没有数据就返回
+						if(data.content.length == 0) {
+							toast("没有更多数据了");
+							return;
+						}
+
+						//更新当前页号
+						app.quanbudingdan.pageindex = ind;
+						if(ind == 0) {
+							app.quanbudingdan.data = data.content;
+						} else {
+							app.quanbudingdan.data = app.quanbudingdan.data.concat(data.content);
+						}
+					}, function(dat) {
+						fun();
+					}, false);
+				});
+			},
+			selectHead:function(){
+				readStorage("dengluCookie", function(cook) {
+					//请求服务器
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryUnApproveSum", {
+						customerCode: cook.username,
+					}, function(data) {
+						//更新当前页号
+						app.title.a = data;
+					}, function(dat) {
+						fun();
+					}, false);
+				});
+			}
+		},
+		filters: {
+			liangweixiaoshu: function(value) {
+				if(!value) {
+					return "";
+				}
+				return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+			},
+			riqizhuanhuan: function(value) {
+				if(value == "null" || value == null || value == undefined) {
+					return "-";
+				}
+				var date = new Date(value);
+				return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+			},
+			zhuangtai: function(value) {
+				switch(value) {
+					case 10:
+						return "未融资";
+						break;
+					case 0:
+						return "融资中";
+						break;
+					case 1:
+						return "融资成功";
+						break;
+					case 2:
+						return "融资审批拒绝";
+						break;
+					case 3:
+						return "限定时间内未处理";
+						break;
+					case 4:
+						return "作废";
+						break;
+				}
+
+			}
+		},
+		watch: {
+			selectCode: function() {
+				app.quanbudingdan.pageindex = -1;
+				app.quanbudingdan.data = [];
+				app.quanbudingdanDown(function() {});
+			}
+		}
+	});
+</script>
+
+<script>
+	summerready = function() {
+		mui('.mui-scroll-wrapper').scroll({
+			indicators: true //是否显示滚动条
+		});
+
+		mui.init({
+			swipeBack: false, //未知属性
+			pullRefresh: {
+				container: '#pageAllrongqi',
+				down: {
+					style: 'circle',
+					callback: function() {
+						app.quanbudingdanDown(function() {
+							mui('#pageAllrongqi').pullRefresh().endPulldownToRefresh();
+						});
+					}
+				},
+				up: {
+					auto: true,
+					contentrefresh: '正在加载...',
+					callback: function() {
+						app.quanbudingdanUp(function() {
+							mui('#pageAllrongqi').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+						});
+					}
+				}
+			}
+		});
+		app.selectHead();
+	}
+</script>

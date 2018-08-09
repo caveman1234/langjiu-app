@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<style>
+			.mui-media-body {
+				margin-top: 1px !important;
+			}
+			
+			li:nth-child(5),
+			li:nth-child(6),
+			li:nth-child(7) {
+				border-bottom: 0px !important;
+			}
+		</style>
+	</head>
+ 
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav header">
+			<a class="mui-icon mui-icon-left-nav back"></a>
+			<h1 class="mui-title">
+				<span>对账</span>
+			</h1>
+		</header>
+		<div id="body" class="mui-content content">
+			<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: white;">>
+				<li v-for="(item,index) in menuList" :key="index" @tap="menuClick(item)" class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3" style="background-color: white;" v-on:tap="menuClick('我的融资')">
+					<a>
+						<img :src="item.imgUrl" style="width: 53%" />
+						<div class="mui-media-body" style="font-size: 12px;">{{item.label}}</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>
+<script>
+	
+	var app = new Vue({
+		el: "#body",
+		data: {
+   			xiaoxi:{
+   				data:{}
+   			},
+   			menuList:[
+   				{
+   					label:"现金对账",
+   					imgUrl:"../../image/cashCheck.png",
+   					id:"cashCheck",
+   					url:"html/accountCheck/cashCheck.html"
+   				},
+   				{
+   					label:"融资对账",
+   					imgUrl:"../../image/finatialCheck.png",
+   					id:"finatialCheck",
+   					url:"html/accountCheck/finatialCheck.html"
+   				},
+   				{
+   					label:"费用对账",
+   					imgUrl:"../../image/costCheck.png",
+   					id:"costCheck",
+   					url:"html/accountCheck/costCheck.html"
+   				},
+   				{
+   					label:"共建基金对账",
+   					imgUrl:"../../image/buildCheck.png",
+   					id:"buildCheck",
+   					url:"html/accountCheck/buildCheck.html"
+   				},
+   				{
+   					label:"保证金对账",
+   					imgUrl:"../../image/promiseCheck.png",
+   					id:"promiseCheck",
+   					url:"html/accountCheck/promiseCheck.html"
+   				},
+   				{
+   					label:"直投对账",
+   					imgUrl:"../../image/takeWineCheck.png",
+   					id:"takeWineCheck",
+   					url:"html/accountCheck/takeWineCheck.html"
+   				},
+   			]
+		},
+		methods: {
+			menuClick: function(item) { //点击菜单按钮
+				summer.openWin({
+				    id:item.id,
+				    url:item.url,
+				    pageParam: {
+								
+					}
+				});
+			}
+		},
+	filters:{
+			riqizhuanhuan:function(value){
+				if(value == "null" || value == null || value == undefined){
+					return "-";
+				}
+				var date = new Date(value);
+				return (date.getMonth()+1) + "-" + date.getDate();
+			}
+		}
+	});
+
+	summerready = function() {
+		
+	}
+</script>

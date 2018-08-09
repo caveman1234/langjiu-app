@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/icons-extra.css" />
+		<link rel="stylesheet" href="../css/my.css" />
+
+		<script src="../js/summer.min.js"></script>
+		<script src="../script/mui.min.js"></script>
+		<script src="../script/vue.js"></script>
+		<script src="../script/jquery.min.js"></script>
+		<script src="../script/my/common.js"></script>
+	</head>
+
+	<body>
+		<div id="body">
+			<nav class="mui-bar mui-bar-tab" id="footer">
+				<a class="mui-tab-item" href="#" v-bind:class="{'mui-active':selectPageIndex==0}" v-on:tap="changeFramePage(0)">
+					<span class="mui-icon mui-icon-home-filled"></span>
+					<span class="mui-tab-label">首页</span>
+				</a>
+				<a style="display: none;" class="mui-tab-item" href="#" v-bind:class="{'mui-active':selectPageIndex==1}" v-on:tap="changeFramePage(1)">
+					<span class="mui-icon mui-icon-extra mui-icon-extra-class" style="font-size: 20px;padding-top: 3px;"></span>
+					<span class="mui-tab-label">商品</span>
+				</a>
+				<a class="mui-tab-item" href="#" v-bind:class="{'mui-active':selectPageIndex==2}" v-on:tap="changeFramePage(2)">
+					<span class="mui-icon mui-icon-contact"></span>
+					<span class="mui-tab-label">我的</span>
+				</a>
+			</nav>
+		</div>
+	</body>
+
+</html>
+<script>
+	var app = new Vue({
+		el: '#body',
+		data: {
+			selectPageIndex: 0,
+			page: [
+				"homegroup_0",
+				"homegroup_1",
+				"homegroup_2",
+			]
+		},
+		methods: {
+			changeFramePage: function(ind) {
+				app.selectPageIndex = ind;
+				summer.setFrameGroupAttr({
+					id: 'mainFrameGroup',
+					index: ind
+				});
+			}
+		}
+	});
+	var _clicktimes = 0;
+
+	function keyBack() {
+		if(_clicktimes == 0) {
+			_clicktimes++;
+			summer.execScript({
+				frameId: app.page[app.selectPageIndex],
+				script: "toast('再按一次退出采购');"
+			});
+			setTimeout(function() {
+				_clicktimes = 0
+			}, 500);
+			return;
+		}
+		summer.exitApp();
+	}
+	summerready = function() {
+		summer.openFrameGroup({
+			id: 'mainFrameGroup',
+			scrollEnabled: false,
+			position: {
+				top: 0,
+				bottom: $summer.offset($summer.byId('footer')).h,
+				left: 0,
+				right: 0
+			},
+			index: 0,
+			frames: [{
+				id: app.page[0],
+				url: '/html/main0.html'
+			}, {
+				id: app.page[1],
+				url: '/html/main1.html'
+			}, {
+				id: app.page[2],
+				url: '/html/main2.html'
+			}],
+		}, function(ret, err) {});
+	}
+</script>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<script src="../../script/axios.js"></script>
+
+		<style>
+			.mui-control-content {
+				height: 100%;
+			}
+			
+			.mui-control-item.mui-active {
+				border-bottom: 2px #E7442E solid !important;
+				color: #E7442E !important;
+			}
+			
+			html,
+			body {
+				height: 100% !important;
+			}
+			
+			li.mui-table-view-cell {
+				padding-right: 15px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-icon-left-nav back"></a>
+			<h1 class="mui-title">
+					<span>我的资产</span>
+				</h1>
+		</header>
+
+		<div id="appDomId" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+			<div class="kuang" style="background-color: #6585e6;margin: 15px;padding: 15px;border-radius:10px;color: #FFFFFF;">
+				<h4 style="font-size: 14px;">
+					<span style="opacity: 0.5;">现金余额</span>
+					<span style="float: right;font-size: 13px;"></span>
+				</h4>
+				<div style="padding: 10px 0px 10px 20px;color: #FFFFFF;font-size: 18px;margin-top: 10px;">
+					<div>
+						<span style="font-size: 14px;">账面余额</span>
+						<strong>{{xianjin.yue | liangweixiaoshu}}</strong>
+					</div>
+					<div style="padding-top: 10px;">
+						<span style="font-size: 14px;">可用余额</span>
+						<strong>{{xianjin.keYongYue | liangweixiaoshu}}</strong>
+					</div>
+				</div>
+			</div>
+			<div class="kuang" style="background-color: #6585e6;margin: 15px;padding: 15px;border-radius:10px;color: #FFFFFF;">
+				<h4 style="font-size: 14px;">
+					<span style="opacity: 0.5;">融资余额</span>
+					<span style="float: right;font-size: 13px;"></span>
+				</h4>
+				<div style="padding: 10px 0px 10px 20px;color: #FFFFFF;font-size: 18px;margin-top: 10px;">
+					<div>
+						<span style="font-size: 14px;">账面余额</span>
+						<strong>{{rongzi.yue | liangweixiaoshu}}</strong>
+					</div>
+					<div style="padding-top: 10px;">
+						<span style="font-size: 14px;">可用余额</span>
+						<strong>{{rongzi.keYongYue | liangweixiaoshu}}</strong>
+					</div>
+				</div>
+			</div>
+			<div class="kuang" style="background-color: #6585e6;margin: 15px;padding: 15px;border-radius:10px;color: #FFFFFF;" v-on:click="itemClick('费用余额')">
+				<h4 style="font-size: 14px;">
+					<span style="opacity: 0.5;">费用余额</span>
+					<span style="float: right;font-size: 13px;">查看明细</span>
+				</h4>
+				<div style="padding: 10px 0px 10px 20px;color: #FFFFFF;font-size: 18px;margin-top: 10px;">
+					<div>
+						<span style="font-size: 14px;">账面余额</span>
+						<strong>{{feiyongyue.Total | liangweixiaoshu }}</strong>
+					</div>
+					<div style="padding-top: 10px;">
+						<span style="font-size: 14px;">可用余额</span>
+						<strong>{{feiyongyue.keYongYue | liangweixiaoshu}}</strong>
+					</div>
+				</div>
+				<div style="color: #FFFFFF;font-size: 28px;">
+					<div style="width: 33.3%;float: left;" v-for="x in feiyongyue.data">
+						<span style="font-size: 14px;opacity: 0.6;">{{x.sybName | buyaoshiyebu}}:</span><br />
+						<span style="font-size: 18px;">{{x.total | liangweixiaoshu}}</span>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+			<div class="kuang" style="background-color: #6585e6;margin: 15px;padding: 15px;border-radius:10px;color: #FFFFFF;">
+				<h4 style="font-size: 14px;">
+					<span style="opacity: 0.5;">直投余额</span>
+					<span style="float: right;font-size: 13px;"></span>
+				</h4>
+				<div style="padding: 10px 0px 10px 20px;color: #FFFFFF;font-size: 18px;margin-top: 10px;">
+					<div>
+						<span style="font-size: 14px;">账面余额</span>
+						<strong>{{zhitou.yue | liangweixiaoshu}}</strong>
+					</div>
+					<div style="padding-top: 10px;">
+						<span style="font-size: 14px;">可用余额</span>
+						<strong>{{zhitou.keYongYue | liangweixiaoshu}}</strong>
+					</div>
+				</div>
+			</div>
+
+			<div class="kuang" style="background-color: #6585e6;margin: 15px;padding: 15px;border-radius:10px;color: #FFFFFF;" v-on:click="itemClick('共建基金余额')">
+				<h4 style="font-size: 14px;">
+					<span style="opacity: 0.5;">共建基金余额</span>
+					<span style="float: right;font-size: 13px;">查看明细</span>
+				</h4>
+				<p style="padding: 10px 0px 10px 20px;color: #FFFFFF;font-size: 18px;margin-top: 10px;">
+					<strong>{{gongjianjijing.Total | liangweixiaoshu}}</strong>
+				</p>
+				<div style="color: #FFFFFF;font-size: 28px;">
+					<div style="width: 33.3%;float: left;" v-for="x in gongjianjijing.data">
+						<span style="font-size: 14px;opacity: 0.6;">{{x.sybName | buyaoshiyebu}}:</span><br />
+						<span style="font-size: 18px;">{{x.total | liangweixiaoshu}}</span>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+			<div class="kuang" style="background-color: #6585e6;margin: 15px;padding: 15px;border-radius:10px;color: #FFFFFF;">
+				<h4 style="font-size: 14px;">
+					<span style="opacity: 0.5;">保证金余额</span>
+					<span style="float: right;font-size: 13px;"></span>
+				</h4>
+				<p style="padding: 10px 0px 10px 20px;color: #FFFFFF;font-size: 18px;margin-top: 10px;">
+					<strong>{{baozhengjin.yue | liangweixiaoshu}}</strong>
+				</p>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	var app = new Vue({
+		el: "#appDomId",
+		data: function(){
+			return {
+				xianjin: {
+					yue: 0, //账面余额
+					keYongYue: 0 //可用余额
+				},
+				rongzi:{
+					yue: 0, //账面余额
+					keYongYue: 0 //可用余额
+				},
+				zhitou:{
+					yue: 0, //账面余额
+					keYongYue: 0 //可用余额
+				},
+				feiyongyue: {
+					data: [],
+					Total: 0,
+					keYongYue: 0 //可用余额
+				},
+				gongjianjijing: {
+					data: [],
+					Total: 0
+				},
+				baozhengjin: {
+					yue: 0
+				}
+			}
+		},
+		methods: {
+			itemClick: function(obj) {
+				
+				switch(obj){
+					case "费用余额":
+						summer.openWin({
+							id: "feiyongyue",
+							url: "html/zichan/feiyongyue.html",
+							pageParam: {
+								data:app.feiyongyue.data
+							}
+						});
+						break;
+					case "共建基金余额":
+						summer.openWin({
+							id: "gongjianjijingyue",
+							url: "html/zichan/gongjianjijingyue.html",
+							pageParam: {
+								data:app.gongjianjijing.data
+							}
+						});
+						break;
+				}
+			},
+			getxianjinyue: function() {
+				readStorage("dengluCookie", function(cook) {
+					//账面余额
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryCashReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						app.xianjin.yue = data;
+					}, function(dat) {}, false);
+					//可用余额
+					doPost("/ocm-web/api/b2b/query-balance-mobile/getCashReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						app.xianjin.keYongYue = data;
+					}, function(dat) {}, false);
+				});
+			},
+			getfeiyongyue: function() {
+				var _this = this;
+				readStorage("dengluCookie", function(cook) {
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryChargeReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						
+						var alltotal = 0;
+						//计算总金额
+						for(var i = 0; i < data.length; i++) {
+							alltotal = alltotal + data[i].total;
+						}
+						_this.feiyongyue.Total = alltotal;
+						_this.feiyongyue.data = data;
+					}, function(dat) {}, false);
+					//可用余额
+					doPost("/ocm-web/api/b2b/query-balance-mobile/getChargeReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						//计算总金额
+						var alltotal = 0;
+						for(var i = 0; i < data.length; i++) {
+							alltotal += data[i].actualReserve;
+						}
+						app.feiyongyue.keYongYue = alltotal;
+					}, function(dat) {}, false);
+				});
+			},
+			getgongjianjijing: function() {
+				readStorage("dengluCookie", function(cook) {
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryFundReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						app.gongjianjijing.data = data;
+
+						//计算总金额
+						var alltotal = 0;
+						for(var i = 0; i < data.length; i++) {
+							alltotal += data[i].total;
+						}
+						app.gongjianjijing.Total = alltotal;
+
+					}, function(dat) {}, false);
+				});
+			},
+			getbaozhengjing: function() {
+				readStorage("dengluCookie", function(cook) {
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryDepositReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						app.baozhengjin.yue = data;
+					}, function(dat) {}, false);
+				});
+			},
+			getrongziyue:function(){
+				readStorage("dengluCookie", function(cook) {
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryFinancingReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						//app.rongzi.yue = data.reserve;
+						//app.rongzi.keYongYue = data.balance;
+						app.rongzi = {
+							yue:data.reserve,
+							keYongYue: data.balance
+						}
+						
+					}, function(dat) {}, false);
+				});
+			},
+			getzhitouyue:function(){
+				readStorage("dengluCookie", function(cook) {
+					doPost("/ocm-web/api/b2b/query-balance-mobile/queryBorrowWineReserve?customerId="+cook.customerId, {
+						customerId: cook.customerId
+					}, function(data) {
+						app.zhitou.yue = data.reserve;
+						app.zhitou.keYongYue = data.balance;
+					}, function(dat) {}, false);
+				});
+			}
+		},
+		filters: {
+			liangweixiaoshu: function(value) {
+				return (value || 0).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+			},
+			buyaoshiyebu: function(value) {
+				return value.replace("事业部", "");
+			}
+		},
+		mounted:function(){
+			
+		}
+	});
+	
+	
+	summerready = function() {
+		app.getxianjinyue();
+		app.getfeiyongyue();
+		app.getgongjianjijing();
+		app.getbaozhengjing();
+		app.getrongziyue();
+		app.getzhitouyue();
+	}
+</script>

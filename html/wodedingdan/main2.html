@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<link rel="stylesheet" href="../../css/my.css" />
+
+		<script src="../../script/jquery.min.js"></script>
+		<script src="../../js/summer.min.js"></script>
+		<script src="../../script/mui.min.js"></script>
+		<script src="../../script/vue.js"></script>
+		<script src="../../script/my/common.js"></script>
+		<style>
+			.mui-table-view:after {
+				height: 0px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="body" class="mui-content" style="height: 100%;">
+			<div style="height: 100%;">
+				<div style="position: relative;width: 100%;height: 100%;">
+					<!--下拉刷新容器-->
+					<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper">
+						<div class="mui-scroll" style="box-shadow: 0px 0px 0px 0px  !important;">
+							<!--数据列表-->
+							<ul class="mui-table-view mui-table-view-chevron list1" style="background-color: #efeff4;">
+								<li v-for="x in quanbudingdan.data" style="padding: 10px 10px;background-color: white;margin-top: 10px;">
+									<div style="font-size: 13px;margin-top: 10px;padding: 0px 10px 0px 10px;">
+										<span>
+											订单编号:{{x.orderCode}}
+										</span>
+										<span style="float: right;" class="colormain">{{x.billStatusName}}</span>
+									</div>
+									<div style="font-size: 13px;margin-top: 10px;padding: 0px 10px 10px 10px;">
+										<span>
+											订单日期:{{x.orderDate | riqizhuanhuan}}
+										</span>
+										<span style="float: right;" class="colormain">￥{{x.totalAmount | liangweixiaoshu}}</span>
+									</div>
+									<ul class="mui-table-view">
+										<li class="mui-table-view-cell" v-for="y in x.purchaseOrderItems" style="padding:5px 10px;">
+											<div style="width: 25%;float: left;">
+												<img v-bind:src="y.imageUrl" style="width: 80%;max-height: 66px;" />
+											</div>
+											<div style="width: 75%;float: left;padding-left: 10px;">
+												<div style="vertical-align:middle;padding-top: 3px;">
+													<p style="display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;color: #333333;font-size: 13px;">{{y.productDesc}}</p>
+													<p style="font-size: 11px;">
+														订货{{y.baleUnitName}}数:{{y.baleQuantity}}{{y.baleUnitName}}
+														<span style="float: right;">
+															累计申请发货
+															<span class="">
+																{{y.applyedQuantity/y.packageNum}}
+															</span>
+															{{y.baleUnitName}}
+														</span>
+													</p>
+													<p style="font-size: 11px;">
+														<span>累计退订数：{{y.backedQuantity/y.packageNum}}{{y.baleUnitName}}</span>
+														<span style="float: right;">累计发货
+															<span class="">
+																{{y.sendedQuantity/y.packageNum}}
+															</span>
+															{{y.baleUnitName}}</span>
+													</p>
+												</div>
+											</div>
+											<div style="clear: both;"></div>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+
+<script>
+	var app = new Vue({
+		el: "#body",
+		data: {
+			quanbudingdan: {
+				pageindex: -1,
+				data: [],
+			},
+			orderCode:"01"
+		},
+		methods: {
+			//下拉上拉
+			quanbudingdanDown: function(fun) {
+				app.SelectList(0, function() {
+					fun();
+				});
+			},
+			quanbudingdanUp: function(fun) {
+				app.SelectList(app.quanbudingdan.pageindex + 1, function() {
+					fun();
+				});
+			},
+			SelectList: function(ind, fun) { //请求某一类型的指定page
+				readStorage("dengluCookie", function(cook) {
+					//请求服务器
+					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", {
+						distributorIds: cook.customerId,
+						poTypeBusinessType: "01,02,04",
+						poTypeCode:app.orderCode,
+						billStatusCode: "03",
+						page: ind,
+						size: 5
+					}, function(data) {
+						fun();
+						//没有数据就返回
+						if(data.content.length == 0) {
+							toast("没有更多数据了");
+							return;
+						}
+
+						//更新当前页号
+						app.quanbudingdan.pageindex = ind;
+						if(ind == 0) {
+							app.quanbudingdan.data = data.content;
+						} else {
+							app.quanbudingdan.data = app.quanbudingdan.data.concat(data.content);
+						}
+						$(".mui-content").show(); //刚开始vue未绑定显示乱码
+					}, function(dat) {
+						fun();
+					}, false);
+				});
+			},changeOrderTypeChild:function(codess){ //父框架选择改变
+				app.orderCode = codess;
+				app.quanbudingdan.data = [];
+				app.SelectList(0, function() {
+					
+				});
+			}
+		},filters:{
+			liangweixiaoshu: function(value) {
+				return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+			},
+			riqizhuanhuan:function(value){
+				if(value == "null" || value == null || value == undefined){
+					return "-";
+				}
+				var date = new Date(value);
+				return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+			}
+		}
+	});
+</script>
+
+<script>
+	$(".mui-content").hide();
+	summerready = function() {
+		mui('.mui-scroll-wrapper').scroll({
+			indicators: true //是否显示滚动条
+		});
+
+		mui.init({
+			swipeBack: false, //未知属性
+			pullRefresh: {
+				container: '#pageAllrongqi',
+				down: {
+					style: 'circle',
+					callback: function() {
+						app.quanbudingdanDown(function() {
+							mui('#pageAllrongqi').pullRefresh().endPulldownToRefresh();
+						});
+					}
+				},
+				up: {
+					auto: true,
+					contentrefresh: '正在加载...',
+					callback: function() {
+						app.quanbudingdanUp(function() {
+							mui('#pageAllrongqi').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+						});
+					}
+				}
+			}
+		});
+	}
+</script>

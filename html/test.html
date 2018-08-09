@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/icons-extra.css" />
+		<link rel="stylesheet" href="../css/my.css" />
+
+		<script src="../script/jquery.min.js"></script>
+		<script src="../js/summer.js"></script>
+		<script src="../script/mui.min.js"></script>
+		<script src="../script/vue.js"></script>
+		<script src="../script/my/common.js"></script>
+
+		<style>
+			input:-ms-input-placeholder {
+				color: #bfbfbf;
+				opacity: 1;
+			}
+			
+			input:-webkit-input-placeholder {
+				color: #bfbfbf;
+				opacity: 1;
+			}
+			
+			.actives {
+				background-color: #e50012 !important;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: white;">
+		<div id="body" class="mui-content content" style="height: 100%;background-color: white;">
+			<div style="text-align: center;padding-top: 80px;">
+				<img src="../image/ico.png" width="90px" />
+			</div>
+			<div style="margin: 40px;">
+				<input v-model="uid" type="text" placeholder="请输入用户名" style="font-size: 14px;border: 0px;background-color: #f7f7f7;color: black ;border-radius: 10px;">
+				<input v-model="pwd" type="password" placeholder="请输入密码" style="font-size: 14px;border: 0px;background-color: #f7f7f7;color: black;border-radius: 10px;">
+
+				<div style="margin-top: 40px;">
+					<button v-on:tap="login()" type="button" v-bind:class="{'actives':uid && pwd}" class="mui-btn mui-btn-primary mui-btn-block" style="height: 40px;font-size: 17px;color: white;background-color: #bfbfbf;padding: 0;border: 0px;border-radius: 10px;">登录</button>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript">
+	summerready = function() {
+		readStorage("loginmsg", function(data) {
+			if(data.uid && data.pwd) {
+				app.uid = data.uid;
+				app.pwd = data.pwd;
+				app.login();
+			}
+		});
+	}
+
+	var app = new Vue({
+		el: "#body",
+		data: {
+			uid: "", //270122
+			pwd: ""
+		},
+		methods: {
+			login: function() {
+				if(app.uid && app.pwd) {} else {
+					return;
+				}
+				//请求服务器
+				doPost("/ocm-web/api/account-mobile/login", {
+					username: app.uid,
+					password: app.pwd
+				}, function(data) {
+					if(!data.customerId) {
+						alert("密码错误");
+						return;
+					}
+					writeStorage("dengluCookie", data);
+
+					app.updateApp();
+					//写入下次自动登录
+					writeStorage("loginmsg", {
+						uid: app.uid,
+						pwd: app.pwd,
+					});
+				}, null, true);
+			},
+			login2: function() {
+				summer.openWin({
+					id: "main",
+					url: "html/mainbase.html",
+					"addBackListener": "true"
+				});
+				app.pwd = "";
+			},
+			updateApp: function() {
+				//请求服务器
+				doPost("/ocm-web/api/app/get-app-version", {
+					platform: summer.getSysInfo().systemType == "android" ? 0 : 1
+				}, function(data) {
+					if(!data){
+						app.login2();
+						return;
+					}
+					var fwqVersion = data.version.split(".");
+					var bdVersion = JSON.parse(summer.getAppVersion()).versionName.split(".");
+					var needUpdate = false;
+					for(var i = 0; i < fwqVersion.length; i++) {
+						if(parseInt(fwqVersion[i]) > parseInt(bdVersion[i])) {
+							needUpdate = true;
+							break;
+						}
+					}
+					
+					//直接登陆不要检查版本
+					app.login2();
+					return;
+					
+					
+					if(needUpdate) {
+						var updateLog = "";
+						if(data.isMustUpdate) { //是否强制更新
+							updateLog += "<div style='text-align: left;'>需要更新后才能使用:</div>";
+						}
+						updateLog += data.updatelog;
+						mui.confirm(updateLog, '发现新版本', ["更新", "暂时不"], function(e) {
+							if(e.index == 0) {
+								app.update(data);
+								return;
+							}
+							app.login2();
+						});
+						if(data.isMustUpdate) { //是否强制更新
+							$(".mui-popup-buttons").hide();
+							app.update(data);
+						}
+					} else {
+						//自动登录
+						app.login2();
+					}
+				}, function(dat) {}, false);
+			},
+			update: function(data) {
+				if(summer.getSysInfo().systemType == "android") {
+					updateApp(baseAdress + data.updatePath);
+				} else {
+					updateApp("https://itunes.apple.com/cn/app/%E9%83%8E%E9%85%92%E6%95%B0%E5%AD%97%E8%90%A5%E9%94%80%E7%B3%BB%E7%BB%9F/id1352861913?mt=8");
+				}
+			}
+		}
+	});
+</script>
