@@ -39,8 +39,8 @@
 	        <ul class="mui-table-view" style="margin-top: 0;">
 			    <li class="mui-table-view-cell">
 			    	<div class="mui-row">
-			    		<div @tap="startDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;">开始日期:{{startDate}}</div>
-			    		<div @tap="endDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;">结束日期:{{endDate}}</div>
+			    		<div @tap="startDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;" v-clock>开始日期:{{startDate}}</div>
+			    		<div @tap="endDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;" v-clock>结束日期:{{endDate}}</div>
 			    		<div @tap="fetchData" class="mui-col-xs-2 mui-col-sm-2" style="font-size:12px; text-align: right;">
 			    			<i class="mui-icon mui-icon-search" style="position: absolute;top: -2px;right: -5px;"></i>
 			    		</div>
@@ -56,27 +56,27 @@
 					<ul class="mui-table-view mui-table-view-chevron list1" style="background-color: #efeff4;-webkit-margin-before:0em;">
 						<li v-for="(item,index) in tableData" :key="index" style="background-color: white;margin-top: 10px;">
 							<div style="padding:15px;border-bottom: #E6E6E6 1px solid;font-size: 13px;">
-								<span style="color: black;">单据号:{{item.billcode || "无"}}</span>
+								<span style="color: black;"  v-clock>单据号:{{item.billcode || "无"}}</span>
 							</div>
 							<div style="padding:8px 15px;font-size: 13px;">
 								<span style="color: #999999;">日期</span>
-								<span style="float: right;font-size: 14px;color: #000000 ;">{{item.dbilldate}}</span>
+								<span style="float: right;font-size: 14px;color: #000000 ;"  v-clock>{{item.dbilldate}}</span>
 							</div>
 							<div style="padding:8px 15px;font-size: 13px;">
 								<span style="color: #999999;">摘要</span>
-								<span style="float: right;font-size: 14px;color: #000000 ;">{{item.memo}}</span>
+								<span style="float: right;font-size: 14px;color: #000000 ;"  v-clock>{{item.memo}}</span>
 							</div>
 							<div style="padding:8px 15px;font-size: 13px;">
 								<span style="color: #999999;">收入</span>
-								<span v-green style="float: right;font-size: 14px;color: #000000 ;">{{item.income | formatInOut}}</span>
+								<span v-green style="float: right;font-size: 14px;color: #000000 ;"  v-clock>{{item.income | formatInOut}}</span>
 							</div>
 							<div style="padding:8px 15px;font-size: 13px;">
 								<span style="color: #999999;">支出</span>
-								<span v-red style="float: right;font-size: 14px;color: #000000 ;">{{item.cost | formatInOut}}</span>
+								<span v-red style="float: right;font-size: 14px;color: #000000 ;"  v-clock>{{item.cost | formatInOut}}</span>
 							</div>
 							<div style="padding:8px 15px;font-size: 13px;">
 								<span style="color: #999999;">余额</span>
-								<span v-green style="float: right;font-size: 14px;color: #000000 ;">{{item.amount | formatInOut}}</span>
+								<span v-green style="float: right;font-size: 14px;color: #000000 ;"  v-clock>{{item.amount | formatInOut}}</span>
 							</div>
 						</li>
 					</ul>

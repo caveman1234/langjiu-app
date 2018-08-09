@@ -42,10 +42,10 @@
 								<li v-for="x in quanbudingdan.data" v-on:tap="dianjixiaoxi(x)">
 									<div style="background-color: #FFFFFF;border-radius: 10px;padding: 15px;margin-top: 15px;">
 										<div>
-											<span style="font-size: 17px;color: #000000;"><strong>{{x.title}}</strong></span>
+											<span v-clock style="font-size: 17px;color: #000000;"><strong>{{x.title}}</strong></span>
 											<span style="float: right;color: #999999;font-size: 13px;"></span>
 										</div>
-										<span style="font-size: 11px;color: #999999;">{{x.creationTime | riqizhuanhuan}}</span>
+										<span v-clock style="font-size: 11px;color: #999999;">{{x.creationTime | riqizhuanhuan}}</span>
 										<div style="color: #2A2A2A;font-size: 14px;margin-top: 10px;">
 											
 										</div>

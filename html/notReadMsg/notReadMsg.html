@@ -39,14 +39,14 @@
 		      <template v-if="item.contentType === 2">
 		        <div class="msgTitle">
 		          <span class="userName">客服人员</span>
-		          <span class="time">{{item.dateline | formatDateTime}}</span>
+		          <span class="time"  v-clock>{{item.dateline | formatDateTime}}</span>
 		        </div>
 		        <div class="msgContent" v-html="item.content.content"></div>
 		      </template>
 		      <template v-if="item.contentType === 4">
 		        <div class="msgTitle">
-		          <span class="userName">{{item.from.slice(0,5)}}</span>
-		          <span class="time">{{item.dateline | formatDateTime}}</span>
+		          <span class="userName"  v-clock>{{item.from.slice(0,5)}}</span>
+		          <span class="time"  v-clock>{{item.dateline | formatDateTime}}</span>
 		        </div>
 		        <div class="msgContent" v-html="item.content.content">
 		          

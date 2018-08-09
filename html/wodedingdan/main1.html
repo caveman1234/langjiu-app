@@ -36,16 +36,16 @@
 							<ul class="mui-table-view mui-table-view-chevron list1" style="background-color: #efeff4;">
 								<li v-for="x in quanbudingdan.data" style="padding: 10px 10px;background-color: white;margin-top: 10px;">
 									<div style="font-size: 13px;margin-top: 10px;padding: 0px 10px 0px 10px;">
-										<span>
+										<span v-clock>
 											订单编号:{{x.orderCode}}
 										</span>
-										<span style="float: right;" class="colormain">{{x.billStatusName}}</span>
+										<span style="float: right;" class="colormain" v-clock>{{x.billStatusName}}</span>
 									</div>
 									<div style="font-size: 13px;margin-top: 10px;padding: 0px 10px 10px 10px;">
-										<span>
+										<span v-clock>
 											订单日期:{{x.orderDate | riqizhuanhuan}}
 										</span>
-										<span style="float: right;" class="colormain">￥{{x.totalAmount | liangweixiaoshu}}</span>
+										<span style="float: right;" class="colormain" v-clock>￥{{x.totalAmount | liangweixiaoshu}}</span>
 									</div>
 									<ul class="mui-table-view">
 										<li class="mui-table-view-cell" v-for="y in x.purchaseOrderItems" style="padding:5px 10px;">
@@ -54,10 +54,10 @@
 											</div>
 											<div style="width: 75%;float: left;padding-left: 10px;">
 												<div style="vertical-align:middle;padding-top: 3px;">
-													<p style="display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;color: #333333;font-size: 13px;">{{y.productDesc}}</p>
-													<p style="font-size: 11px;">
+													<p style="display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;color: #333333;font-size: 13px;" v-clock>{{y.productDesc}}</p>
+													<p style="font-size: 11px;" v-clock>
 														订货{{y.baleUnitName}}数:{{y.baleQuantity}}{{y.baleUnitName}}
-														<span style="float: right;">
+														<span style="float: right;" v-clock>
 															累计申请发货
 															<span class="">
 																{{y.applyedQuantity/y.packageNum}}
@@ -65,7 +65,7 @@
 															{{y.baleUnitName}}
 														</span>
 													</p>
-													<p style="font-size: 11px;">
+													<p style="font-size: 11px;" v-clock>
 														<span>累计退订数：{{y.backedQuantity/y.packageNum}}{{y.baleUnitName}}</span>
 														<span style="float: right;">累计发货
 															<span class="">

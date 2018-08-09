@@ -44,7 +44,7 @@
 	<body>
 		<div id="body">
 			<header id="header" class="mui-bar mui-bar-nav header">
-			<h1 class="mui-title">欢迎:{{userName}}</h1>
+			<h1 class="mui-title" v-clock>欢迎:{{userName}}</h1>
 		</header>
 		<div id="body" class="mui-content content">
 			<div id="slider" class="mui-slider">
@@ -184,11 +184,11 @@
 							<li class="mui-table-view-cell" v-for="item in xiaoxi.data" v-on:tap="dianjixiaoxi(item)">
 								<div class="mui-table">
 									<div class="mui-table-cell mui-col-xs-10">
-										<span>{{item.title}}</span>
-										<h5 style="font-size: 12px;">公告编号:{{item.ts}}</h5>
+										<span v-clock>{{item.title}}</span>
+										<h5 style="font-size: 12px;" v-clock>公告编号:{{item.ts}}</h5>
 									</div>
 									<div class="mui-table-cell mui-col-xs-2 mui-text-right">
-										<span class="mui-h5">{{item.creationTime | riqizhuanhuan}}</span>
+										<span class="mui-h5" v-clock>{{item.creationTime | riqizhuanhuan}}</span>
 									</div>
 								</div>
 							</li>

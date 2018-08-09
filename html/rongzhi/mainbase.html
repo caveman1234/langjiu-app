@@ -42,18 +42,18 @@
 			</header>
 			<div class="mui-content" style="height: 100%;">
 				<div style="background-color: #f75c47;color: white;padding: 30px 20px; height: 200px;">
-					<p style="font-size: 27px;color: #FFFFFF;">累计融资 {{titles.orderMny | liangweixiaoshu}}<span style="font-size: 13px;">元</span></p>
+					<p style="font-size: 27px;color: #FFFFFF;" v-clock>累计融资 {{titles.orderMny | liangweixiaoshu}}<span style="font-size: 13px;">元</span></p>
 					<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
 						<p style="color: #FFFFFF;opacity: 0.6;">
 							累计还款:
 						</p>
-						<div style="margin-top: 10px;font-size: 17px;">{{titles.totalRepayMny | liangweixiaoshu}}</div>
+						<div style="margin-top: 10px;font-size: 17px;" v-clock>{{titles.totalRepayMny | liangweixiaoshu}}</div>
 					</div>
 					<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
 						<p style="color: #FFFFFF;opacity: 0.6;">
 							累计提货:
 						</p>
-						<div style="margin-top: 10px;font-size: 17px;"> {{titles.totalRepaidMay | liangweixiaoshu}}</div>
+						<div style="margin-top: 10px;font-size: 17px;" v-clock> {{titles.totalRepaidMay | liangweixiaoshu}}</div>
 					</div>
 					<div style="clear: both;"></div>
 				</div>
@@ -67,28 +67,28 @@
 								<li v-for="x in quanbudingdan.data" style="background-color: white;margin-top: 10px;">
 									
 									<div style="padding:15px;border-bottom: #E6E6E6 1px solid;font-size: 13px;">
-										<span style="color: black;">订单号:{{x.orderCode}}</span>
+										<span style="color: black;" v-clock>订单号:{{x.orderCode}}</span>
 										<span style="float: right;color: #E7442E;padding-right: 5px !important;">{{x.billStatus | zhuangtai}}</span>
 									</div>
 									<div style="padding:8px 15px;font-size: 13px;">
 										<span style="color: #999999;">融资金额</span>
-										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.orderMny|liangweixiaoshu}}元</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;" v-clock>{{x.orderMny|liangweixiaoshu}}元</span>
 									</div>
 									<div style="padding:8px 15px;font-size: 13px;">
 										<span style="color: #999999;">累计还款金额</span>
-										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.totalRepayMny | liangweixiaoshu}}元</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;" v-clock>{{x.totalRepayMny | liangweixiaoshu}}元</span>
 									</div>
 									<div style="padding:8px 15px;font-size: 13px;">
 										<span style="color: #999999;">累计提货金额</span>
-										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.totalRepaidMny | liangweixiaoshu}}元</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;" v-clock>{{x.totalRepaidMny | liangweixiaoshu}}元</span>
 									</div>
 									<div style="padding:8px 15px;font-size: 13px;">
 										<span style="color: #999999;">订单日期</span>
-										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.applyDate | riqizhuanhuan}}</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;" v-clock>{{x.applyDate | riqizhuanhuan}}</span>
 									</div>
 									<div style="padding:8px 15px;font-size: 13px;">
 										<span style="color: #999999;">到期日</span>
-										<span style="float: right;font-size: 14px;color: #000000 ;">{{x.expireDate | riqizhuanhuan}}</span>
+										<span style="float: right;font-size: 14px;color: #000000 ;" v-clock>{{x.expireDate | riqizhuanhuan}}</span>
 									</div>
 								</li>
 							</ul>

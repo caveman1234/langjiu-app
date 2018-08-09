@@ -30,12 +30,12 @@
 		<div id="body" class="mui-content" style="height: 100%;background-color: #ffffff;">
 			<div style="padding: 10px;width: 100%;">
 				<p style="font-size: 19px;color: #000000;margin-top: 20px;">
-					<strong>{{data.title}}</strong>
+					<strong v-clock>{{data.title}}</strong>
 				</p>
 				<p style="margin-bottom: 1px;font-size: 15px;color: #666666;margin-top: 20px;"></p>
-				<p style="font-size: 11px;color: #999999;">{{data.creationTime | riqizhuanhuan}}</p>
+				<p v-clock style="font-size: 11px;color: #999999;">{{data.creationTime | riqizhuanhuan}}</p>
 				<p v-for="x in data.files">
-					<a v-on:click="doanFile(x)">{{x.filename}}</a>
+					<a v-on:click="doanFile(x)" v-clock>{{x.filename}}</a>
 				</p>
 				<div id="imagecontent" v-html="contentfilters(data.content)" style="font-size: 15px;color: #000000;letter-spacing: 0.58px;line-height: 27px;margin-top: 20px;">
 				</div>

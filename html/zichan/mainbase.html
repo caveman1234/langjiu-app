@@ -280,7 +280,6 @@
 				doPost("/ocm-web/api/b2b/query-balance-mobile/queryFundReserve?customerId=" + customerId, {
 					customerId: customerId
 				}, function (data) {
-					alert(JSON.stringify(data))
 					app.gongDetail = data;
 					//计算总金额
 					var alltotal = data.reduce(function(acc,v){
@@ -328,7 +327,7 @@
 		readStorage("dengluCookie", function (cook) {
 			var customerId = cook.customerId
 			//"171b88f4-b36b-4335-b756-0666acc41008"
-			app.fetchData("171b88f4-b36b-4335-b756-0666acc41008")
+			app.fetchData(customerId)
 
 		})
 

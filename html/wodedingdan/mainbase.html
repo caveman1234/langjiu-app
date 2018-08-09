@@ -46,7 +46,7 @@
 				<a class="mui-icon mui-icon-left-nav back" style="color: white !important;"></a>
 				<h1 class="mui-title" style="color: white !important;">
 					<a href="#popover" id="openPopover"  href="#topPopover">
-					<span>{{nowChangeOrderType.name}}▼</span>
+					<span v-clock>{{nowChangeOrderType.name}}▼</span>
 					</a>
 				</h1>
 			</header>
@@ -56,24 +56,24 @@
 					<div id="popover" class="mui-popover">
 						<ul class="mui-table-view">
 							<li class="mui-table-view-cell" v-for="x in codeChange" v-on:tap="changeOrderType(x)">
-								<a href="#">{{x.name}}</a>
+								<a v-clock href="#">{{x.name}}</a>
 							</li>
 						</ul>
 					</div>
 
 					<div style="background-color: #f75c47;color: white;padding: 30px 20px;">
-						<p style="font-size: 27px;color: #FFFFFF;">总金额 {{(weifahuojine+yifahuojine) | liangweixiaoshu}}<span style="font-size: 13px;">元</span></p>
+						<p v-clock style="font-size: 27px;color: #FFFFFF;">总金额 {{(weifahuojine+yifahuojine) | liangweixiaoshu}}<span style="font-size: 13px;">元</span></p>
 						<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
 							<p style="color: #FFFFFF;opacity: 0.6;">
 								已发货金额:
 							</p>
-							<div style="margin-top: 10px;font-size: 17px;">{{yifahuojine | liangweixiaoshu}}</div>
+							<div v-clock style="margin-top: 10px;font-size: 17px;">{{yifahuojine | liangweixiaoshu}}</div>
 						</div>
 						<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
 							<p style="color: #FFFFFF;opacity: 0.6;">
 								未发货金额:
 							</p>
-							<div style="margin-top: 10px;font-size: 17px;">{{weifahuojine | liangweixiaoshu}}</div>
+							<div v-clock style="margin-top: 10px;font-size: 17px;">{{weifahuojine | liangweixiaoshu}}</div>
 						</div>
 						<div style="clear: both;"></div>
 					</div>
