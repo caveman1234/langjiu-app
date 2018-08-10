@@ -1,236 +1,500 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
-		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<title></title>
-		<link rel="stylesheet" href="../../css/mui.min.css" />
-		<link rel="stylesheet" href="../../css/icons-extra.css" />
-		<link rel="stylesheet" href="../../css/my.css" />
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+	/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title></title>
+	<link rel="stylesheet" href="../../css/mui.min.css" />
+	<link rel="stylesheet" href="../../css/icons-extra.css" />
+	<link rel="stylesheet" href="../../css/my.css" />
+	<link rel="stylesheet" href="../../css/mui.picker.css" />
 
-		<script src="../../script/jquery.min.js"></script>
-		<script src="../../js/summer.min.js"></script>
-		<script src="../../script/mui.min.js"></script>
-		<script src="../../script/vue.js"></script>
-		<script src="../../script/my/common.js"></script>
+	<script src="../../script/jquery.min.js"></script>
+	<script src="../../js/summer.min.js"></script>
+	<script src="../../script/mui.min.js"></script>
+	<script src="../../script/vue.js"></script>
+	<script src="../../script/my/common.js"></script>
+	<script src="../../script/mui.picker.min.js"></script>
 
-		<style>
-			.mui-control-content {
-				height: 100%;
-			}
-			
-			.mui-control-item.mui-active {
-				border-bottom: 2px #E7442E solid !important;
-				color: #E7442E !important;
-			}
-			
-			html,
-			body {
-				height: 100% !important;
-			}
-			
-			li.mui-table-view-cell {
-				padding-right: 15px !important;
-			}
-		</style>
-	</head>
+	<style>
+		.mui-control-content {
+			height: 100%;
+		}
 
-	<body>
-		<div id="body">
-			<header id="header" class="mui-bar mui-bar-nav" style="background-color: #f75c47 !important;box-shadow: 0 0 0 ;">
-				<a class="mui-icon mui-icon-left-nav back" style="color: white !important;"></a>
-				<h1 class="mui-title" style="color: white !important;">
-					<a href="#popover" id="openPopover"  href="#topPopover">
-					<span v-clock>{{nowChangeOrderType.name}}▼</span>
-					</a>
-				</h1>
-			</header>
+		.mui-control-item.mui-active {
+			border-bottom: 2px #E7442E solid !important;
+			color: #E7442E !important;
+		}
 
-			<div class="mui-content">
+		html,
+		body {
+			height: 100% !important;
+			font-size: 12px;
+		}
+
+		li.mui-table-view-cell {
+			padding-right: 15px !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="appContainer" style="height:100%;">
+		<header id="header" class="mui-bar mui-bar-nav" style="background-color: #f75c47 !important;box-shadow: 0 0 0 ;">
+
+			<h1 class="mui-title">
+				<span v-clock style="color:white;">{{billTypeName}}</span>
+			</h1>
+			<a class="mui-icon mui-icon-left-nav back" style="color: white !important;"></a>
+			<a @click="headerSearch" id="openPopover" class="mui-icon mui-icon-search mui-pull-right"></a>
+		</header>
+
+
+		<div id="popover" class="mui-popover" style="width:100%;">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<div class="mui-row">
+						<div @tap="startDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;" v-clock>开始日期:{{startDate}}</div>
+						<div @tap="endDateFun" class="mui-col-xs-5 mui-col-sm-5" style="font-size:12px;" v-clock>结束日期:{{endDate}}</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-row">
+						<span class="mui-col-xs-3 mui-col-sm-3">订单类型:</span>
+						<select v-model="poTypeId" class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;" name="" id="">
+							<template v-for="(item,i) in poTypeIdDataSource">
+								<option :key="i" :value="item.value">{{item.label}}</option>
+							</template>
+						</select>
+					</div>
+				</li>
+				<!-- <li class="mui-table-view-cell">
+					<div class="mui-row">
+						<span class="mui-col-xs-3 mui-col-sm-3">订单状态:</span>
+						<select v-model="billStatusCode" class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;" name="" id="">
+							<template v-for="(item,i) in billStatusCodeDataSource">
+								<option :key="i" :value="item.value">{{item.label}}</option>
+							</template>
+						</select>
+					</div>
+				</li> -->
+				<li class="mui-table-view-cell">
+					<div class="mui-row">
+						<span class="mui-col-xs-3 mui-col-sm-3">订单编号:</span>
+						<span class="mui-col-xs-9 mui-col-sm-9">
+							<input v-model="billCode" type="text" style="margin:0;padding:3px;height: 28px;border: none;" class="mui-input-clear">
+						</span>
+
+
+
+					</div>
+				</li>
+				<li class="mui-table-view-cell ">
+					<div style="float: right;">
+						<button @click="headerSearchInner" style="line-height:13px;" type="button" class="mui-btn mui-btn-primary mui-btn-outlined mui-navigate-right">
+							<i class="mui-icon mui-icon-search"></i>搜索</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div class="mui-content">
+			<div>
+				<div style="background-color: #f75c47;color: white;padding: 30px 20px;">
+					<p v-clock style="font-size: 27px;color: #FFFFFF;">总金额 {{(weifahuojine+yifahuojine) | liangweixiaoshu}}
+						<span style="font-size: 13px;">元</span>
+					</p>
+					<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
+						<p style="color: #FFFFFF;opacity: 0.6;">
+							已发货金额:
+						</p>
+						<div v-clock style="margin-top: 10px;font-size: 17px;">{{yifahuojine | liangweixiaoshu}}</div>
+					</div>
+					<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
+						<p style="color: #FFFFFF;opacity: 0.6;">
+							未发货金额:
+						</p>
+						<div v-clock style="margin-top: 10px;font-size: 17px;">{{weifahuojine | liangweixiaoshu}}</div>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+
 				<div>
-					<div id="popover" class="mui-popover">
-						<ul class="mui-table-view">
-							<li class="mui-table-view-cell" v-for="x in codeChange" v-on:tap="changeOrderType(x)">
-								<a v-clock href="#">{{x.name}}</a>
-							</li>
-						</ul>
-					</div>
-
-					<div style="background-color: #f75c47;color: white;padding: 30px 20px;">
-						<p v-clock style="font-size: 27px;color: #FFFFFF;">总金额 {{(weifahuojine+yifahuojine) | liangweixiaoshu}}<span style="font-size: 13px;">元</span></p>
-						<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
-							<p style="color: #FFFFFF;opacity: 0.6;">
-								已发货金额:
-							</p>
-							<div v-clock style="margin-top: 10px;font-size: 17px;">{{yifahuojine | liangweixiaoshu}}</div>
-						</div>
-						<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
-							<p style="color: #FFFFFF;opacity: 0.6;">
-								未发货金额:
-							</p>
-							<div v-clock style="margin-top: 10px;font-size: 17px;">{{weifahuojine | liangweixiaoshu}}</div>
-						</div>
-						<div style="clear: both;"></div>
-					</div>
-
-					<div>
-						<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="background-color:white;">
-							<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==0}" href="#itemlist1" v-on:tap="tabChange(0)">
-								全部订单
-							</a>
-							<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==1}" href="#itemlist2" v-on:tap="tabChange(1)">
-								待审核
-							</a>
-							<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==2}" href="#itemlist3" v-on:tap="tabChange(2)">
-								审核通过
-							</a>
-							<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==3}" href="#itemlist4" v-on:tap="tabChange(3)">
-								未通过
-							</a>
-							<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==4}" href="#itemlist5" v-on:tap="tabChange(4)">
-								已完成
-							</a>
-						</div>
+					<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="background-color:white;">
+						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==0}" href="#itemlist1" v-on:tap="tabChange(0)">
+							全部订单
+						</a>
+						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==1}" href="#itemlist2" v-on:tap="tabChange(1)">
+							待审核
+						</a>
+						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==2}" href="#itemlist3" v-on:tap="tabChange(2)">
+							审核通过
+						</a>
+						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==3}" href="#itemlist4" v-on:tap="tabChange(3)">
+							未通过
+						</a>
+						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==4}" href="#itemlist5" v-on:tap="tabChange(4)">
+							已完成
+						</a>
 					</div>
 				</div>
 			</div>
 		</div>
-	</body>
+		<div style="position: relative;width: 100%;height: 100%;border:1p solid;">
+			<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper">
+				<div class="mui-scroll" style="box-shadow: 0px 0px 0px 0px  !important;">
+
+					<!--数据列表-->
+					<ul class="mui-table-view mui-table-view-chevron list1" style="background-color: #efeff4;">
+						<li v-for="x in quanbudingdan.data" style="padding: 10px 10px;background-color: white;margin-top: 10px;">
+							<div style="font-size: 13px;margin-top: 10px;padding: 0px 10px 0px 10px;">
+								<span v-clock>
+									订单编号:{{x.orderCode}}
+								</span>
+								<span v-clock style="float: right;" class="colormain">{{x.billStatusName}}</span>
+							</div>
+							<div style="font-size: 13px;margin-top: 10px;padding: 0px 10px 10px 10px;">
+								<span v-clock>
+									订单日期:{{x.orderDate | riqizhuanhuan}}
+								</span>
+								<span v-clock style="float: right;" class="colormain">￥{{x.totalAmount | liangweixiaoshu}}</span>
+							</div>
+							<ul class="mui-table-view">
+								<li class="mui-table-view-cell" v-for="y in x.purchaseOrderItems" style="padding:5px 10px;">
+									<div style="width: 25%;float: left;">
+										<img v-bind:src="y.imageUrl" style="width: 80%;max-height: 66px;" />
+									</div>
+									<div style="width: 75%;float: left;padding-left: 10px;">
+										<div style="vertical-align:middle;padding-top: 3px;">
+											<p style="display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;color: #333333;font-size: 13px;" v-clock>{{y.productDesc}}</p>
+											<p style="font-size: 11px;" v-clock>
+												订货{{y.baleUnitName}}数:{{y.baleQuantity}}{{y.baleUnitName}}
+												<span style="float: right;" v-clock>
+													累计申请发货
+													<span class="" v-clock>
+														{{y.applyedQuantity/y.packageNum}}
+													</span>
+													{{y.baleUnitName}}
+												</span>
+											</p>
+											<p style="font-size: 11px;" v-clock>
+												<span v-clock>累计退订数：{{y.backedQuantity/y.packageNum}}{{y.baleUnitName}}</span>
+												<span style="float: right;" v-clock>累计发货
+													<span class="" v-clock>
+														{{y.sendedQuantity/y.packageNum}}
+													</span>
+													{{y.baleUnitName}}</span>
+											</p>
+										</div>
+									</div>
+									<div style="clear: both;"></div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+
+
+
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>
 
 </html>
 <script>
+	var currentDate = new Date().getTime();
+	var startDate = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+	var endDate = new Date(currentDate);
+	var startDateStr = startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
+	var endDateStr = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate();
 	var app = new Vue({
-		el: "#body",
+		el: "#appContainer",
 		data: {
 			weifahuojine: 0,
 			yifahuojine: 0,
 			nowSelectPage: 0, //当前选择的页面
-			codeChange: [ //订单类型
+			poTypeIdDataSource: [ //订单类型
 				{
-					code: "01",
-					name: "销售订单"
+					value: "",
+					label: "全部订单"
 				},
 				{
-					code: "02",
-					name: "调整订单"
+					value: "01",
+					label: "销售订单"
 				},
 				{
-					code: "04",
-					name: "填仓提货单"
+					value: "02",
+					label: "调整订单"
+				},
+				{
+					value: "04",
+					label: "填仓提货单"
 				}
 			],
-			nowChangeOrderType: {
-				code: "01",
-				name: "销售订单"
-			}, //当前选择的订单类型
+			billStatusCodeDataSource: [
+				{ value: "", label: "全部" },
+				{ value: "02", label: "待审核" },
+				{ value: "03", label: "审核通过" },
+				{ value: "04", label: "审核不通过" },
+				{ value: "05", label: "已完成" },
+			],
+			//+++++++++
+			quanbudingdan: {
+				pageindex: -1,
+				data: [],
+			},
+			orderCode: "01",
+			//billStatusCode  ""->全部|"01"->未提交||"02"->待审核订单|"03"->审核通过|"04"->审核不通过|"05"->已完成
+			billStatusCode: "",
+			//订单类型
+			poTypeBusinessType: "01,02,04",
+			//+++++++++++++++++++增加搜索字段+++++++++++++++++++++++
+			startDate: startDateStr,//开始日期
+			endDate: endDateStr,//结束日期
+			poTypeId: "",//订单类型
+			billStatusCode: "",//订单状态
+			billCode: "",//订单编码
 		},
 		methods: {
-			tabChange: function(ind) {
-				app.nowSelectPage = ind;
-				summer.setFrameGroupAttr({
-					id: 'wodedingdanMainGroup',
-					index: ind
+			startDateFun: function () {
+				var _this = this;
+				var beginDate = null;
+				var endDate = null;
+				if (_this.endDate) {
+					endDate = _this.endDate;
+				}
+				var dtPicker = new mui.DtPicker({
+					type: "date",
+					beginDate: beginDate && new Date(beginDate),
+					endDate: endDate && new Date(endDate)
+				});
+				dtPicker.show(function (obj) {
+					_this.startDate = obj.value
+					console.log(obj)
 				});
 			},
-			selectweifahuo: function() {
-				readStorage("dengluCookie", function(cook) {
+			endDateFun: function () {
+				var _this = this;
+				var beginDate = null;
+				var endDate = null;
+				if (_this.startDate) {
+					beginDate = _this.startDate;
+				}
+				var dtPicker = new mui.DtPicker({
+					type: "date",
+					beginDate: beginDate && new Date(beginDate),
+					endDate: endDate && new Date(endDate),
+				});
+				dtPicker.show(function (obj) {
+					_this.endDate = obj.value
+					console.log(obj)
+				});
+			},
+			tabChange: function (ind) {
+				app.nowSelectPage = ind;
+				switch (ind) {
+					case 0:
+						//全部订单
+						app.billStatusCode = "";
+						app.SelectList(0, function () { });
+						break;
+					case 1:
+						//待审核
+						app.billStatusCode = "02";
+						app.SelectList(0, function () { });
+						break;
+					case 2:
+						//审核通过
+						app.billStatusCode = "03";
+						app.SelectList(0, function () { });
+						break;
+					case 3:
+						//未通过
+						app.billStatusCode = "04";
+						app.SelectList(0, function () { });
+						break;
+					case 4:
+						//已完成
+						app.billStatusCode = "05";
+						app.SelectList(0, function () { });
+						break;
+				}
+			},
+			selectweifahuo: function () {
+				readStorage("dengluCookie", function (cook) {
 					//请求服务器
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/countUnSendedOrderByCustomerId", {
 						customerId: cook.customerId
-					}, function(data) {
+					}, function (data) {
 						//没有数据就返回
 						app.weifahuojine = data.totalAmount;
-					}, function(dat) {
+					}, function (dat) {
 						alert("获取未发货金额出现问题");
 					}, false);
 				});
 			},
-			selectyifahuo: function() {
-				readStorage("dengluCookie", function(cook) {
+			selectyifahuo: function () {
+				readStorage("dengluCookie", function (cook) {
 					//请求服务器
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/countSendedOrderByCustomerId", {
 						customerId: cook.customerId
-					}, function(data) {
+					}, function (data) {
 						//没有数据就返回
 						app.yifahuojine = data.totalAmount;
-					}, function(dat) {
+					}, function (dat) {
 						alert("获取已发货金额出现问题");
 					}, false);
 				});
 			},
-			changeOrderType: function(x) {
-				app.nowChangeOrderType = x;
-				mui('.mui-popover').popover('hide');
 
-				summer.execScript({
-					frameId: 'wodedingdanMainGroup1',
-					script: "app.changeOrderTypeChild('" + app.nowChangeOrderType.code + "')"
+			//+++++++++++
+			//下拉上拉
+			quanbudingdanDown: function (fun) {
+				app.SelectList(0, function () {
+					fun();
 				});
-				summer.execScript({
-					frameId: 'wodedingdanMainGroup2',
-					script: "app.changeOrderTypeChild('" + app.nowChangeOrderType.code + "')"
+			},
+			quanbudingdanUp: function (fun) {
+				app.SelectList(app.quanbudingdan.pageindex + 1, function () {
+					fun();
 				});
-				summer.execScript({
-					frameId: 'wodedingdanMainGroup3',
-					script: "app.changeOrderTypeChild('" + app.nowChangeOrderType.code + "')"
+			},
+			SelectList: function (ind, fun) { //请求某一类型的指定page
+				readStorage("dengluCookie", function (cook) {
+					//请求服务器
+					var params = {
+						distributorIds: cook.customerId,
+						poTypeBusinessType: "01,02,04",
+						poTypeCode: app.orderCode,
+
+						page: ind,
+						size: 5,
+						//+++++++++++增加搜索字段++++++++++++++
+						// orderDateBegin: app.startDate,//开始日期
+						// orderDateEnd: app.endDate,//结束日期
+						// poTypeId: app.poTypeId,//订单类型
+						// billStatusCode: app.billStatusCode,//订单状态
+						// billCode: app.billCode,//订单编码
+					}
+					//alert(JSON.stringify(params));
+					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
+						fun();
+						//没有数据就返回
+						if (data.content.length == 0) {
+							toast("没有更多数据了");
+							return;
+						}
+
+						//更新当前页号
+						app.quanbudingdan.pageindex = ind;
+						if (ind == 0) {
+							app.quanbudingdan.data = data.content;
+
+						} else {
+							app.quanbudingdan.data = app.quanbudingdan.data.concat(data.content);
+						}
+						$(".mui-content").show(); //刚开始vue未绑定显示乱码
+					}, function (dat) {
+						fun();
+					}, true);
+					//重置搜索参数
+					app.resetParams();
 				});
-				summer.execScript({
-					frameId: 'wodedingdanMainGroup4',
-					script: "app.changeOrderTypeChild('" + app.nowChangeOrderType.code + "')"
+			},
+			//++++++++++搜索++++++++++++++
+			headerSearch: function () {
+				mui('#popover.mui-popover').popover('toggle', document.getElementById("openPopover"));
+			},
+			headerSearchInner: function () {
+				mui('#popover.mui-popover').popover('toggle', document.getElementById("openPopover"));
+				this.SelectList(0, function func() { });
+			},
+			fetchSelects: function () {
+				readStorage("dengluCookie", function (cook) {
+					var params = {
+						customerId: cook.customerId
+					};
+					var url = "/ocm-web/api/base/organization/get-offices-list";
+					var successFun = function (data) {
+						var sybDataSource = data.map(function (v) {
+							return {
+								value: v.id,
+								label: v.name
+							}
+						});
+						sybDataSource.unshift({ value: "", label: "全部" });
+						app.sybDataSource = sybDataSource;
+
+					};
+					var errorFun = function () { };
+					doPost(url, params, successFun, errorFun, true, "get");
 				});
-				summer.execScript({
-					frameId: 'wodedingdanMainGroup5',
-					script: "app.changeOrderTypeChild('" + app.nowChangeOrderType.code + "')"
-				});
+
+			},
+			resetParams: function () {
+				// app.poTypeId = "";//订单类型不清空
+				app.billStatusCode = "";
+				app.billCode = "";
 			}
 		},
 		filters: {
-			liangweixiaoshu: function(value) {
+			liangweixiaoshu: function (value) {
 				return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+			}
+		},
+		computed: {
+			billTypeName: function () {
+				var poTypeId = this.poTypeId;
+				var currentObj = this.poTypeIdDataSource.filter(function (v) {
+					return v.value === poTypeId;
+				})[0];
+				return currentObj ? currentObj.label : "dfdf"
 			}
 		}
 	});
 </script>
 <script>
-	summerready = function() {
+	summerready = function () {
 		//summerready后依然执行失败
-		setTimeout(function() {
+		setTimeout(function () {
 			app.selectweifahuo();
 			app.selectyifahuo();
-			summer.openFrameGroup({
-				id: 'wodedingdanMainGroup',
-				scrollEnabled: false,
-				position: {
-					top: document.getElementById("body").offsetHeight,
-					bottom: 0,
-					left: 0,
-					right: 0
-				},
-				index: 0,
-				frames: [{
-					id: "wodedingdanMainGroup1",
-					url: '/html/wodedingdan/main0.html'
-				}, {
-					id: "wodedingdanMainGroup2",
-					url: '/html/wodedingdan/main1.html'
-				}, {
-					id: "wodedingdanMainGroup3",
-					url: '/html/wodedingdan/main2.html'
-				}, {
-					id: "wodedingdanMainGroup4",
-					url: '/html/wodedingdan/main3.html'
-				}, {
-					id: "wodedingdanMainGroup5",
-					url: '/html/wodedingdan/main4.html'
-				}]
-			}, function(ret, err) {
-				app.nowSelectPage = ret.index;
-			});
 		}, 1000);
+		mui('.mui-scroll-wrapper').scroll({
+			indicators: true //是否显示滚动条
+		});
+
+		mui.init({
+			swipeBack: false, //未知属性
+			pullRefresh: {
+				container: '#pageAllrongqi',
+				down: {
+					style: 'circle',
+					callback: function () {
+						app.quanbudingdanDown(function () {
+							mui('#pageAllrongqi').pullRefresh().endPulldownToRefresh();
+						});
+					}
+				},
+				up: {
+					auto: true,
+					contentrefresh: '正在加载...',
+					callback: function () {
+						app.quanbudingdanUp(function () {
+							mui('#pageAllrongqi').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+						});
+					}
+				}
+			}
+		});
 	}
 </script>

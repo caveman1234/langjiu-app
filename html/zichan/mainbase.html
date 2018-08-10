@@ -48,6 +48,12 @@
 		.bold {
 			font-weight: bold;
 		}
+		.shadow{
+			box-shadow: 0 7px 30px rgba(138, 136, 136, 0.4);
+		}
+		.grey{
+			color: gray;
+		}
 	</style>
 </head>
 
@@ -61,37 +67,37 @@
 
 	<div id="appDomId" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
 		<div class="item">
-			<ul class="mui-table-view">
+			<ul class="mui-table-view shadow">
 				<li class="mui-table-view-cell">
 					<span class="bold">现金余额</span>
 				</li>
 				<li class="mui-table-view-cell mui-row">
-					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>账面余额：{{xianjinZ | liangweixiaoshu}}</div>
-					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>可用余额：{{xianjinK | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock><span class="grey"></span> 账面余额：{{xianjinZ | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock><span class="grey"></span>可用余额：{{xianjinK | liangweixiaoshu}}</div>
 				</li>
 			</ul>
 		</div>
 		<div class="item">
-			<ul class="mui-table-view">
+			<ul class="mui-table-view shadow">
 				<li class="mui-table-view-cell">
 					<span class="bold">融资余额</span>
 				</li>
 				<li class="mui-table-view-cell mui-row">
-					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>账面余额：{{rongziZ | liangweixiaoshu}}</div>
-					<div class="mui-col-xs-6 mui-col-sm-6" v-clock>可用余额：{{rongziK | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock><span class="grey">账面余额：</span>{{rongziZ | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6" v-clock><span class="grey">可用余额：</span>{{rongziK | liangweixiaoshu}}</div>
 				</li>
 			</ul>
 		</div>
 		<div class="item">
-			<ul class="mui-table-view">
+			<ul class="mui-table-view shadow">
 				<li class="mui-table-view-cell">
 					<span class="bold">费用余额</span>
 					<span @click="itemClick('feiyong')" class="mui-badge mui-badge-primary">查看明细</span>
 				</li>
 				<li class="mui-table-view-cell mui-row">
 					<div class="mui-row">
-						<div class="mui-col-xs-6 mui-col-sm-6" v-clock>账面余额：{{feiyongZ | liangweixiaoshu}}</div>
-						<div class="mui-col-xs-6 mui-col-sm-6" v-clock>可用余额：{{feiyongK | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-6 mui-col-sm-6" v-clock><span class="grey">账面余额：</span>{{feiyongZ | liangweixiaoshu}}</div>
+						<div class="mui-col-xs-6 mui-col-sm-6" v-clock><span class="grey">可用余额：</span>{{feiyongK | liangweixiaoshu}}</div>
 					</div>
 				</li>
 				<li class="mui-table-view-cell mui-row">
@@ -109,18 +115,18 @@
 			</ul>
 		</div>
 		<div class="item">
-			<ul class="mui-table-view">
+			<ul class="mui-table-view shadow">
 				<li class="mui-table-view-cell">
 					<span class="bold">直投余额</span>
 				</li>
 				<li class="mui-table-view-cell mui-row">
-					<div class="mui-col-xs-6 mui-col-sm-6">账面余额：{{zhitouZ | liangweixiaoshu}}</div>
-					<div class="mui-col-xs-6 mui-col-sm-6">可用余额：{{zhitouK | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6"><span class="grey">账面余额：</span>{{zhitouZ | liangweixiaoshu}}</div>
+					<div class="mui-col-xs-6 mui-col-sm-6"><span class="grey">可用余额：</span>{{zhitouK | liangweixiaoshu}}</div>
 				</li>
 			</ul>
 		</div>
 		<div class="item">
-			<ul class="mui-table-view">
+			<ul class="mui-table-view shadow">
 				<li class="mui-table-view-cell">
 					<span class="bold">共建基金余额</span>
 					<span @click=itemClick('gong')  class="mui-badge mui-badge-primary">查看明细</span>
@@ -145,7 +151,7 @@
 			</ul>
 		</div>
 		<div class="item">
-			<ul class="mui-table-view">
+			<ul class="mui-table-view shadow">
 				<li class="mui-table-view-cell">
 					<span class="bold">保证金余额</span>
 				</li>
