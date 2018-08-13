@@ -1,8 +1,8 @@
 //封装的全局方法 和组件
 var isDevEnv = false;
-var baseAdress = "https://c.langjiu.cn/" 
+var baseAdress = "https://c.langjiu.cn/" ;
+// var baseAdress = "http://10.18.0.203:8080" ;
 baseAdress = isDevEnv ? "" : baseAdress;
-//baseAdress = "http://192.168.100.58"; 
 $(document).ready(function() {
 	//返回按钮 关闭当前页面
 	$(".back").click(function() {

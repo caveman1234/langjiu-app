@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title></title>
+  <link rel="stylesheet" href="../../css/mui.min.css" />
+  <link rel="stylesheet" href="../../css/icons-extra.css" />
+  <link rel="stylesheet" href="../../css/my.css" />
+  <script src="../../script/jquery.min.js"></script>
+  <script src="../../js/summer.min.js"></script>
+  <script src="../../script/mui.min.js"></script>
+  <script src="../../script/vue.js"></script>
+  <script src="../../script/my/common.js"></script>
+  <style>
+    ::-webkit-input-placeholder {
+      font-size: 12px;
+    }
+
+    * {
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+
+    .mui-content>.mui-table-view:first-child {
+      margin-top: 0px;
+    }
+
+    .mui-table-view {
+      margin-bottom: 5px !important;
+      box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    .label {}
+
+    .value {
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="header" class="mui-bar mui-bar-nav">
+    <a class="mui-icon mui-icon-left-nav back"></a>
+    <h1 class="mui-title">
+      <span>服务支持</span>
+    </h1>
+  </header>
+  <div id="app" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+
+
+    <ul v-if="saleLeaders.length > 0" class="mui-table-view">
+      <li class="mui-table-view-cell" style="font-weight: bold;">销售公司领导</li>
+      <li v-for="(item,i) in saleLeaders" :key="i" class="mui-table-view-cell">
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">部门</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="label" v-clock>{{item.departent}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">职位</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.position}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">姓名</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.name}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">手机号</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <!-- <span class="value" v-clock>{{item.phone}}</span> -->
+              <a :href="`tel:${item.phone}`">
+                <span class="value" v-clock>
+                  <img style="top: 3px;position: relative;" width="15px" src="../../image/phone.png" alt="">{{item.phone}}
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <ul v-if="qinghualang.length > 0" class="mui-table-view">
+      <li class="mui-table-view-cell" style="font-weight: bold;">青花郎事业部</li>
+      <li v-for="(item,i) in qinghualang" :key="i" class="mui-table-view-cell">
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">部门</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="label" v-clock>{{item.departent}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">职位</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.position}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">姓名</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.name}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">手机号</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <!-- <span class="value" v-clock>{{item.phone}}</span> -->
+              <a :href="`tel:${item.phone}`">
+                <span class="value" v-clock>
+                  <img style="top: 3px;position: relative;" width="15px" src="../../image/phone.png" alt="">{{item.phone}}
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <ul v-if="xiaolangjiu.length > 0" class="mui-table-view">
+      <li class="mui-table-view-cell" style="font-weight: bold;">小郎酒事业部</li>
+      <li v-for="(item,i) in xiaolangjiu" :key="i" class="mui-table-view-cell">
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">部门</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="label" v-clock>{{item.departent}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">职位</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.position}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">姓名</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.name}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">手机号</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <!-- <span class="value" v-clock>{{item.phone}}</span> -->
+              <a :href="`tel:${item.phone}`">
+                <span class="value" v-clock>
+                  <img style="top: 3px;position: relative;" width="15px" src="../../image/phone.png" alt="">{{item.phone}}
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <ul v-if="tequ.length > 0" class="mui-table-view">
+      <li class="mui-table-view-cell" style="font-weight: bold;">特曲事业部</li>
+      <li v-for="(item,i) in tequ" :key="i" class="mui-table-view-cell">
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">部门</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="label" v-clock>{{item.departent}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">职位</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.position}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mui-row">
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">姓名</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <span class="value" v-clock>{{item.name}}</span>
+            </div>
+          </div>
+          <div class="mui-col-xs-6 mui-col-sm-6 mui-row">
+            <div class="mui-col-xs-4 mui-col-sm-4">
+              <span class="label">手机号</span>:</div>
+            <div class="mui-col-xs-8 mui-col-sm-8">
+              <!-- <span class="value" v-clock>{{item.phone}}</span> -->
+              <a :href="`tel:${item.phone}`">
+                <span class="value" v-clock>
+                  <img style="top: 3px;position: relative;" width="15px" src="../../image/phone.png" alt="">{{item.phone}}
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+
+
+
+  </div>
+
+</body>
+
+</html>
+
+
+<script>
+  var totalDatas = [{
+      departent: "销售公司领导",
+      position: "销售公司副总经理",
+      name: "销售公司领导",
+      phone: "13666666666",
+      sybCode: "0202"
+    },
+    {
+      departent: "销售公司领导",
+      position: "销售公司副总经理",
+      name: "销售公司领导",
+      phone: "13666666666",
+      sybCode: "0212"
+    },
+    {
+      departent: "销售公司领导",
+      position: "销售公司副总经理",
+      name: "销售公司领导",
+      phone: "13666666666",
+      sybCode: "0215"
+    },
+    {
+      departent: "销售公司领导",
+      position: "销售公司副总经理",
+      name: "销售公司领导",
+      phone: "13666666666",
+      sybCode: "0216"
+    },
+
+  ];
+  var app = new Vue({
+    el: '#app',
+    data: function () {
+      return {
+        totalDatas: []
+      }
+    },
+    methods: {
+      fetchData: function () {
+        readStorage("dengluCookie", function (cook) {
+          doPost("/ocm-web/api/account-mobile/queryPersonFwzt?customerId=" + cook.customerId, {}, function (data) {
+            app.totalDatas = (data || []).map(function (v) {
+              return {
+                sybCode: v.syb_code,//事业部编码
+                sybName: v.syb_name,//事业部名称
+                departent: v.bm,//部门
+                position: v.zw,//职位
+                name: v.mc,//名称
+                phone: v.phone,//电话
+              }
+            });
+          }, function (dat) {
+
+          }, false, "post");
+        });
+      },
+    },
+    mounted: function () {
+
+    },
+    filters: {
+      riqizhuanhuan: function (value) {
+        if (value == "null" || value == null || value == undefined) {
+          return "-";
+        }
+        var date = new Date(value);
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+      },
+    },
+    computed: {
+      saleLeaders: function () {
+        //销售公司领导
+        return this.totalDatas.filter(function (v) {
+          return v.sybCode === "0202";
+        });
+      },
+      qinghualang: function () {
+        //青花朗
+        return this.totalDatas.filter(function (v) {
+          return v.sybCode === "0212";
+        });
+      },
+      xiaolangjiu: function () {
+        //小郎酒
+        return this.totalDatas.filter(function (v) {
+          return v.sybCode === "0215";
+        });
+      },
+      tequ: function () {
+        //特曲
+        return this.totalDatas.filter(function (v) {
+          return v.sybCode === "0216";
+        });
+      },
+    }
+  })
+</script>
+
+<script>
+  summerready = function () {
+    app.fetchData();
+  }
+</script>

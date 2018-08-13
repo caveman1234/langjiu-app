@@ -3,8 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
-	/>
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
 	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
 	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -147,7 +146,7 @@
 			</div>
 		</div>
 		<div style="position: relative;width: 100%;height: calc( 100vh - 245px );border:1p solid;">
-			<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper">
+			<div id="pageAllrongqi" class="mui-content mui-scroll-wrapper" style="height: 100%;">
 				<div class="mui-scroll" style="box-shadow: 0px 0px 0px 0px  !important;">
 
 					<!--数据列表-->
@@ -222,11 +221,11 @@
 			weifahuojine: 0,
 			yifahuojine: 0,
 			nowSelectPage: 0, //当前选择的页面
-			poTypeIdDataSource: [ //订单类型
-				{
-					value: "",
-					label: "全部订单"
-				},
+			poTypeIdDataSource: [
+				// {
+				// 	value: "",
+				// 	label: "全部"
+				// },
 				{
 					value: "01",
 					label: "销售订单"
@@ -239,13 +238,27 @@
 					value: "04",
 					label: "填仓提货单"
 				}
-			],
-			billStatusCodeDataSource: [
-				{ value: "", label: "全部" },
-				{ value: "02", label: "待审核" },
-				{ value: "03", label: "审核通过" },
-				{ value: "04", label: "审核不通过" },
-				{ value: "05", label: "已完成" },
+			], //订单类型
+			billStatusCodeDataSource: [{
+					value: "",
+					label: "全部"
+				},
+				{
+					value: "02",
+					label: "待审核"
+				},
+				{
+					value: "03",
+					label: "审核通过"
+				},
+				{
+					value: "04",
+					label: "审核不通过"
+				},
+				{
+					value: "05",
+					label: "已完成"
+				},
 			],
 			//+++++++++
 			quanbudingdan: {
@@ -258,11 +271,11 @@
 			//订单类型
 			poTypeBusinessType: "01,02,04",
 			//+++++++++++++++++++增加搜索字段+++++++++++++++++++++++
-			startDate: startDateStr,//开始日期
-			endDate: endDateStr,//结束日期
-			poTypeId: "",//订单类型
-			billStatusCode: "",//订单状态
-			billCode: "",//订单编码
+			startDate: startDateStr, //开始日期
+			endDate: endDateStr, //结束日期
+			poTypeId: "01", //订单类型
+			billStatusCode: "", //订单状态
+			billCode: "", //订单编码
 		},
 		methods: {
 			startDateFun: function () {
@@ -305,27 +318,27 @@
 					case 0:
 						//全部订单
 						app.billStatusCode = "";
-						app.SelectList(0, function () { });
+						app.SelectList(0, function () {}, true);
 						break;
 					case 1:
 						//待审核
 						app.billStatusCode = "02";
-						app.SelectList(0, function () { });
+						app.SelectList(0, function () {}, true);
 						break;
 					case 2:
 						//审核通过
 						app.billStatusCode = "03";
-						app.SelectList(0, function () { });
+						app.SelectList(0, function () {}, true);
 						break;
 					case 3:
 						//未通过
 						app.billStatusCode = "04";
-						app.SelectList(0, function () { });
+						app.SelectList(0, function () {}, true);
 						break;
 					case 4:
 						//已完成
 						app.billStatusCode = "05";
-						app.SelectList(0, function () { });
+						app.SelectList(0, function () {}, true);
 						break;
 				}
 			},
@@ -368,35 +381,37 @@
 					fun();
 				});
 			},
-			SelectList: function (ind, fun) { //请求某一类型的指定page
+			SelectList: function (ind, fun, isTabChange) { //请求某一类型的指定page
 				readStorage("dengluCookie", function (cook) {
 					//请求服务器
 					var params = {
 						distributorIds: cook.customerId,
 						poTypeBusinessType: "01,02,04",
-						poTypeCode: app.orderCode,
 
 						page: ind,
 						size: 5,
 						//+++++++++++增加搜索字段++++++++++++++
-						// orderDateBegin: app.startDate,//开始日期
-						// orderDateEnd: app.endDate,//结束日期
-						// poTypeId: app.poTypeId,//订单类型
-						// billStatusCode: app.billStatusCode,//订单状态
-						// billCode: app.billCode,//订单编码
+						orderDateBegin: new Date(app.startDate).getTime(), //开始日期
+						orderDateEnd: new Date(app.endDate).getTime(), //结束日期
+						poTypeCode: app.poTypeId, //订单类型
+						billStatusCode: app.billStatusCode, //订单状态
+						orderCode: app.billCode, //订单编码
 					}
 					//alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
 						fun();
 						//没有数据就返回
-						if (data.content.length == 0) {
+						if (data.content.length == 0 && !isTabChange) {
 							toast("没有更多数据了");
 							return;
 						}
 
+
+
 						//更新当前页号
+
 						app.quanbudingdan.pageindex = ind;
-						if (ind == 0) {
+						if (ind == 0 || isTabChange) {
 							app.quanbudingdan.data = data.content;
 
 						} else {
@@ -416,26 +431,27 @@
 			},
 			headerSearchInner: function () {
 				mui('#popover.mui-popover').popover('toggle', document.getElementById("openPopover"));
-				this.SelectList(0, function func() { });
+				this.SelectList(0, function func() {},true);
 			},
 			fetchSelects: function () {
 				readStorage("dengluCookie", function (cook) {
-					var params = {
-						customerId: cook.customerId
-					};
-					var url = "/ocm-web/api/base/organization/get-offices-list";
+					var params = {};
+					var url = "/ocm-web/po-types/find-all-po?search_IN_businessType=01,02,04";
 					var successFun = function (data) {
-						var sybDataSource = data.map(function (v) {
+						var poTypeIdDataSource = data.map(function (v) {
 							return {
 								value: v.id,
 								label: v.name
 							}
 						});
-						sybDataSource.unshift({ value: "", label: "全部" });
-						app.sybDataSource = sybDataSource;
+						poTypeIdDataSource.unshift({
+							value: "",
+							label: "全部"
+						});
+						app.poTypeIdDataSource = poTypeIdDataSource;
 
 					};
-					var errorFun = function () { };
+					var errorFun = function () {};
 					doPost(url, params, successFun, errorFun, true, "get");
 				});
 
@@ -449,6 +465,13 @@
 		filters: {
 			liangweixiaoshu: function (value) {
 				return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+			},
+			riqizhuanhuan: function (value) {
+				if (value == "null" || value == null || value == undefined) {
+					return "-";
+				}
+				var date = new Date(value);
+				return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 			}
 		},
 		computed: {
@@ -457,7 +480,7 @@
 				var currentObj = this.poTypeIdDataSource.filter(function (v) {
 					return v.value === poTypeId;
 				})[0];
-				return currentObj ? currentObj.label : "dfdf"
+				return currentObj ? currentObj.label : ""
 			}
 		}
 	});
@@ -468,6 +491,7 @@
 		setTimeout(function () {
 			app.selectweifahuo();
 			app.selectyifahuo();
+			// app.fetchSelects();
 		}, 1000);
 		mui('.mui-scroll-wrapper').scroll({
 			indicators: true //是否显示滚动条
