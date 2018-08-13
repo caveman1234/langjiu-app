@@ -188,8 +188,8 @@
 						apprDateBegin: _this.startDate && new Date(_this.startDate).getTime(),
 						apprDateEnd: _this.endDate && new Date(_this.endDate).getTime(),
 						//+++++++++++++++++++++++++++++++++后台需要增加搜索条件++++++++++++++++++++++++++++++++++++++
-						sybValue: app.sybValue,//产品线
-						costValue: app.costValue,//费用类型
+						productGroupId: app.sybValue,//产品线
+						ctype: app.costValue,//费用类型
 					};
 					params = Object.keys(params)
 						.reduce(function (acc, key) {
