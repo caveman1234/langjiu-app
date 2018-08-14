@@ -8,9 +8,9 @@
   <frame_name>summer-um</frame_name>  
   <theme>blue</theme>  
   <icon relativePath="css/themes/default/app">app</icon>  
-  <versionCode>2</versionCode>  
-  <versionBuild>2.0.6</versionBuild>  
-  <versionName>2.0.6</versionName>  
+  <versionCode>2.0.8</versionCode>  
+  <versionBuild>2.0.8</versionBuild>  
+  <versionName>2.0.8</versionName>  
   <orientation>unspecified</orientation>  
   <permission id="android.permission.INTERNET"/>  
   <statusBarStyle>dark</statusBarStyle>  

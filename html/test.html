@@ -54,6 +54,7 @@
 
 </html>
 <script type="text/javascript">
+	window.currentVersion = "2.0.8";
 	summerready = function() {
 		readStorage("loginmsg", function(data) {
 			if(data.uid && data.pwd) {
@@ -112,7 +113,8 @@
 						return;
 					}
 					var fwqVersion = data.version.split(".");
-					var bdVersion = JSON.parse(summer.getAppVersion()).versionName.split(".");
+					// var bdVersion = JSON.parse(summer.getAppVersion()).versionName.split(".");
+					var bdVersion = window.currentVersion.split(".");
 					var needUpdate = false;
 					for(var i = 0; i < fwqVersion.length; i++) {
 						if(parseInt(fwqVersion[i]) > parseInt(bdVersion[i])) {
@@ -120,12 +122,17 @@
 							break;
 						}
 					}
-
+					// summer.getPermission(["android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_PHONE_STATE"], function(args) {
+					// 	alert(summer.getAppVersion())
+					// }, function(args) {
+					// 	alert("没有获取到相应权限"); //失败返回illegal access
+					// });
 					
-					//直接登陆不要检查版本
-					app.login2();
+					//直接登陆不要检查版本 begin
+					// app.login2();
 					
-					return;
+					// return;
+					//直接登陆不要检查版本 end
 					
 					
 					if(needUpdate) {
