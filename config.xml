@@ -8,7 +8,7 @@
   <frame_name>summer-um</frame_name>  
   <theme>blue</theme>  
   <icon relativePath="css/themes/default/app">app</icon>  
-  <versionCode>2.0.9</versionCode>  
+  <versionCode>2</versionCode>  
   <versionBuild>2.0.9</versionBuild>  
   <versionName>2.0.9</versionName>  
   <orientation>unspecified</orientation>  
