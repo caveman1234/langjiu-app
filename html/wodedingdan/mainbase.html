@@ -394,15 +394,15 @@
 						page: ind,
 						size: 5,
 						//+++++++++++增加搜索字段++++++++++++++
-						orderDateBegin: new Date(app.startDate).getTime(), //开始日期
-						orderDateEnd: new Date(app.endDate).getTime(), //结束日期
+						orderDateBegin: new Date(app.$data.startDate).getTime(), //开始日期
+						orderDateEnd: new Date(app.$data.endDate).getTime(), //结束日期
 						poTypeCode: app.poTypeId, //订单类型
 						billStatusCode: app.billStatusCode, //订单状态
 						orderCode: app.billCode, //订单编码
 					}
 					alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
-						alert(String(data.content.length))
+						alert(JSON.stringify(data.content));
 						fun();
 						//没有数据就返回
 						if (data.content.length == 0 && !isTabChange) {
