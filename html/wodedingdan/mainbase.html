@@ -294,7 +294,6 @@
 					endDate: endDate && new Date(endDate)
 				});
 				dtPicker.show(function (obj) {
-					alert(JSON.stringify(obj))
 					_this.startDate = obj.value
 					console.log(obj)
 				});
@@ -386,6 +385,7 @@
 				});
 			},
 			SelectList: function (ind, fun, isTabChange) { //请求某一类型的指定page
+				var _this = this;
 				readStorage("dengluCookie", function (cook) {
 					//请求服务器
 					var params = {
@@ -395,11 +395,11 @@
 						page: ind,
 						size: 5,
 						//+++++++++++增加搜索字段++++++++++++++
-						orderDateBegin: new Date(app.startDate).getTime(), //开始日期
-						orderDateEnd: new Date(app.endDate).getTime(), //结束日期
-						poTypeCode: app.poTypeId, //订单类型
-						billStatusCode: app.billStatusCode, //订单状态
-						orderCode: app.billCode, //订单编码
+						orderDateBegin: new Date(_this.startDate).getTime(), //开始日期
+						orderDateEnd: new Date(_this.endDate).getTime(), //结束日期
+						poTypeCode: _this.poTypeId, //订单类型
+						billStatusCode: _this.billStatusCode, //订单状态
+						orderCode: _this.billCode, //订单编码
 					}
 					// alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
