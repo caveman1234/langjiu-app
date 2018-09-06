@@ -109,7 +109,7 @@
 		<div class="mui-content">
 			<div>
 				<div style="background-color: #f75c47;color: white;padding: 30px 20px;">
-					<p v-clock style="font-size: 27px;color: #FFFFFF;">总金额 {{(weifahuojine+yifahuojine) | liangweixiaoshu}}
+					<p v-clock style="font-size: 27px;color: #FFFFFF;">总金额1 {{(weifahuojine+yifahuojine) | liangweixiaoshu}}
 						<span style="font-size: 13px;">元</span>
 					</p>
 					<div style="width: 50%;float: left;margin-top: 10px;font-size: 14px;">
@@ -130,7 +130,7 @@
 				<div>
 					<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="background-color:white;">
 						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==0}" href="#itemlist1" v-on:tap="tabChange(0)">
-							全部订单1
+							全部订单
 						</a>
 						<a class="mui-control-item" v-bind:class="{'mui-active':nowSelectPage==1}" href="#itemlist2" v-on:tap="tabChange(1)">
 							待审核
@@ -400,7 +400,7 @@
 						billStatusCode: app.billStatusCode, //订单状态
 						orderCode: app.billCode, //订单编码
 					}
-					//alert(JSON.stringify(params));
+					alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
 						alert(String(data.content.length))
 						fun();
