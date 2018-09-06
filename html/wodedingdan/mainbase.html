@@ -401,7 +401,7 @@
 						billStatusCode: _this.$data.billStatusCode, //订单状态
 						orderCode: _this.$data.billCode, //订单编码
 					}
-					alert(JSON.stringify(params));
+					// alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
 						// alert(JSON.stringify(data.content));
 						fun();
