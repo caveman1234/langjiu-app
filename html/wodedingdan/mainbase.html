@@ -216,8 +216,8 @@
 	var currentDate = new Date().getTime();
 	var startDate = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
 	var endDate = new Date(currentDate);
-	var startDateStr = startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
-	var endDateStr = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate();
+	var startDateStr = startDate.getFullYear() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getDate();
+	var endDateStr = endDate.getFullYear() + "/" + (endDate.getMonth() + 1) + "/" + endDate.getDate();
 	var app = new Vue({
 		el: "#appContainer",
 		data: {
@@ -294,7 +294,7 @@
 					endDate: endDate && new Date(endDate)
 				});
 				dtPicker.show(function (obj) {
-					_this.startDate = obj.value
+					_this.startDate = obj.value.replace(/-/g,"/")
 					console.log(obj)
 				});
 			},
@@ -311,7 +311,7 @@
 					endDate: endDate && new Date(endDate),
 				});
 				dtPicker.show(function (obj) {
-					_this.endDate = obj.value
+					_this.endDate = obj.value.replace(/-/g,"/")
 					console.log(obj)
 				});
 			},
