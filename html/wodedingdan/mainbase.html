@@ -402,6 +402,7 @@
 					}
 					//alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
+						alert(String(data.content.length))
 						fun();
 						//没有数据就返回
 						if (data.content.length == 0 && !isTabChange) {
