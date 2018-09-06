@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
-		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<title></title>
-		<link rel="stylesheet" href="../../css/mui.min.css" />
-		<link rel="stylesheet" href="../../css/icons-extra.css" />
-		<link rel="stylesheet" href="../../css/my.css" />
-		<script src="../../script/jquery.min.js"></script>
-		<script src="../../js/summer.min.js"></script>
-		<script src="../../script/mui.min.js"></script>
-		<script src="../../script/vue.js"></script>
-		<script src="../../script/my/common.js"></script>
-		<style>
-			::-webkit-input-placeholder {
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title></title>
+	<link rel="stylesheet" href="../../css/mui.min.css" />
+	<link rel="stylesheet" href="../../css/icons-extra.css" />
+	<link rel="stylesheet" href="../../css/my.css" />
+	<script src="../../script/jquery.min.js"></script>
+	<script src="../../js/summer.min.js"></script>
+	<script src="../../script/mui.min.js"></script>
+	<script src="../../script/vue.js"></script>
+	<script src="../../script/my/common.js"></script>
+	<style>
+		::-webkit-input-placeholder {
 				font-size: 12px;
 			}
 			*{
@@ -43,177 +43,175 @@
 				flex:1;
 			}
 		</style>
-	</head>
+</head>
 
-	<body>
-		<header id="header" class="mui-bar mui-bar-nav">
-			<a class="mui-icon mui-icon-left-nav back"></a>
-			<h1 class="mui-title">
-				<span>调查表</span>
-			</h1>
-		</header>
-		<div id="app" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
-			<div class="msgContainer">
-				<div v-for="(item,index) in data1" :key="index" class="item">
-					<div class="itemRow">
-						<div class="title" style="text-align: right;padding-right: 15px;">标题:</div>
-						<div class="content" v-clock>{{item.title}}</div>
+<body>
+	<header id="header" class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-left-nav back"></a>
+		<h1 class="mui-title">
+			<span>调查表</span>
+		</h1>
+	</header>
+	<div id="app" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+		<div class="msgContainer">
+			<div v-for="(item,index) in data1" :key="index" class="item">
+				<div class="itemRow">
+					<div class="title" style="text-align: right;padding-right: 15px;">标题:</div>
+					<div class="content" v-clock>{{item.title}}</div>
+				</div>
+				<div class="itemRow">
+					<div class="title" style="text-align: right;padding-right: 15px;">结束日期:</div>
+					<div class="content" v-clock>{{item.endDate | riqizhuanhuan}}</div>
+				</div>
+				<div class="itemRow">
+					<div class="title" style="text-align: right;padding-right: 15px;">填报状态:</div>
+					<div class="content" v-clock>{{item.fillState == 1 ? "已填报":"未填报"}}</div>
+				</div>
+				<div class="itemRow">
+					<div class="title" style="text-align: right;padding-right: 15px;">操作:</div>
+					<div class="content">
+						<button v-if="item.fillState == 1" @click="look(item)" type="button" class="mui-btn mui-btn-success mui-btn-outlined">查看</button>
+						<button v-else @click="fillIn(item)" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">填写</button>
 					</div>
-					<div class="itemRow">
-						<div class="title" style="text-align: right;padding-right: 15px;">结束日期:</div>
-						<div class="content" v-clock>{{item.endDate | riqizhuanhuan}}</div>
-					</div>
-					<div class="itemRow">
-						<div class="title" style="text-align: right;padding-right: 15px;">填报状态:</div>
-						<div class="content" v-clock>{{item.fillState == 1 ? "已填报":"未填报"}}</div>
-					</div>
-					<div class="itemRow">
-						<div class="title" style="text-align: right;padding-right: 15px;">操作:</div>
-						<div class="content">
-							<button v-if="item.fillState == 1" @click="look(item)" type="button" class="mui-btn mui-btn-success mui-btn-outlined">查看</button>
-							<button v-else @click="fillIn(item)" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">填写</button>
-						</div>
-					</div>				
 				</div>
 			</div>
 		</div>
-		
-	</body>
+	</div>
+
+</body>
 
 </html>
 
 <script>
-	var mockData = [
-        {
-            "id": "fd9746a3-0b77-4111-aebf-cdfc36d80902",
-            "title": "测试111",
-            "templateId": "76D68A8502B0E92250027087509E31B049A57223D0D1E5FD5697058C98477B32",
-            "endDate": 1532966400000,
-            "state": 1,
-            "isAllCanSee": 0,
-            "isEnable": 0,
-            "fillState": 0,
-            "fillDateTime": 1532659901000,
-            "divisionId": null,
-            "divisionCode": "022103",
-            "divisionName": "定制开发",
-            "agencyId": null,
-            "agencyCode": "0209",
-            "agencyName": "综合管理部",
-            "cityId": null,
-            "cityCode": "0202010101",
-            "cityName": "城市单元",
-            "dataid": "83A19AB449AB2621CC6F580813E3ABA2B924B9AB3C9E71A05697058C98477B32"
-        },
-        {
-            "id": "661e46e9-272b-4cc9-8ac5-f79b5a24fa69",
-            "title": "2018年青花郎事业部经销商满意度调查表-2",
-            "templateId": "05EA541AB68E96F450027087509E31B030140CE8C497AA515697058C98477B32",
-            "endDate": 1532966400000,
-            "state": 1,
-            "isAllCanSee": 0,
-            "isEnable": 0,
-            "fillState": 1,
-            "fillDateTime": 1532657488000,
-            "divisionId": null,
-            "divisionCode": "022103",
-            "divisionName": "定制开发",
-            "agencyId": null,
-            "agencyCode": "0209",
-            "agencyName": "综合管理部",
-            "cityId": null,
-            "cityCode": "0202010101",
-            "cityName": "城市单元",
-            "dataid": "E84C0894E6A629D4CC6F580813E3ABA21944AE5BD3864E675697058C98477B32"
-        }
-    ]
+	var mockData = [{
+			"id": "fd9746a3-0b77-4111-aebf-cdfc36d80902",
+			"title": "测试111",
+			"templateId": "76D68A8502B0E92250027087509E31B049A57223D0D1E5FD5697058C98477B32",
+			"endDate": 1532966400000,
+			"state": 1,
+			"isAllCanSee": 0,
+			"isEnable": 0,
+			"fillState": 0,
+			"fillDateTime": 1532659901000,
+			"divisionId": null,
+			"divisionCode": "022103",
+			"divisionName": "定制开发",
+			"agencyId": null,
+			"agencyCode": "0209",
+			"agencyName": "综合管理部",
+			"cityId": null,
+			"cityCode": "0202010101",
+			"cityName": "城市单元",
+			"dataid": "83A19AB449AB2621CC6F580813E3ABA2B924B9AB3C9E71A05697058C98477B32"
+		},
+		{
+			"id": "661e46e9-272b-4cc9-8ac5-f79b5a24fa69",
+			"title": "2018年青花郎事业部经销商满意度调查表-2",
+			"templateId": "05EA541AB68E96F450027087509E31B030140CE8C497AA515697058C98477B32",
+			"endDate": 1532966400000,
+			"state": 1,
+			"isAllCanSee": 0,
+			"isEnable": 0,
+			"fillState": 1,
+			"fillDateTime": 1532657488000,
+			"divisionId": null,
+			"divisionCode": "022103",
+			"divisionName": "定制开发",
+			"agencyId": null,
+			"agencyCode": "0209",
+			"agencyName": "综合管理部",
+			"cityId": null,
+			"cityCode": "0202010101",
+			"cityName": "城市单元",
+			"dataid": "E84C0894E6A629D4CC6F580813E3ABA21944AE5BD3864E675697058C98477B32"
+		}
+	]
 	var app = new Vue({
-      el: '#app',
-      data:function(){
-      	return {
-      		data1:[],
-      		customerCode:"",
-      		customerName:""
-      	}
-      },
-      methods: {
-        fetchData: function() {
-          readStorage("dengluCookie", function(cook) {
-				doPost("/ocm-web/api/noticeQuestionary/zdpageQuery", {
-					customerId: cook.customerId,
-					size:30
-				}, function(data) {
-					app.data1 = data.content
-				}, function(dat) {}, false,"get");
-			});
-		},
-	    //查看
-	    look:function(row) {
-	      var dataId = row.dataid;
-	      var templateId = row.templateId;
-	      var url = "https://pro.formtalk.net/w.do";
-	      var openUrl = url + "?f=" + templateId + "&d=" + dataId;
-	      row.openUrl = openUrl;
-	      //window.open(openUrl);
-	      summer.openWin({
-				id:"sdfsdfsdf",
-			    url:"html/diaocha/page.html",
-			    isKeep:false,
-			    pageParam:row
-			  });
-	    },
-	    fillIn:function(row) {
-		      var templateId = row.templateId;
-		      var url = "https://pro.formtalk.net/w.do";
-		      var id = row.id;
-		      var agencyCode = row.agencyCode;//办事处编码
-		      var agencyName = row.agencyName;//办事处名称
-		      var cityCode = row.cityCode;//城市编码
-		      var cityName = row.cityName;//城市名称
-		      var divisionCode = row.divisionCode;//事业部编码
-		      var divisionName = row.divisionName;//事业部名称
-		      //var customerCode = this.$store.state.username;
-		      //var customerName = this.$store.state.userloginName;
-		      var data4Display = {
-		        tempId: id,
-		        agencyCode:agencyCode,
-		        agencyName:agencyName,
-		        cityCode:cityCode,
-		        cityName:cityName,
-		        divisionCode:divisionCode,
-		        divisionName:divisionName,
-		        customerCode:this.customerCode,
-		        customerName:this.customerName
-		      };
-		      var openUrl = url + "?f=" + templateId + "&data4Display=" + encodeURIComponent(JSON.stringify(data4Display));
-		      console.log(openUrl);
-			  summer.openWin({
-				id:"sdfsdfsdf11",
-			    url:"html/diaocha/page.html",
-			    isKeep:false,
-			    pageParam:row
-			  });
-	    },
-  },
-  mounted:function(){
-  	
-  },
-  filters:{
-  	riqizhuanhuan: function(value) {
-			if(value == "null" || value == null || value == undefined) {
-				return "-";
+		el: '#app',
+		data: function () {
+			return {
+				data1: [],
+				customerCode: "",
+				customerName: ""
 			}
-			var date = new Date(value);
-			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 		},
-      }
-})
+		methods: {
+			fetchData: function () {
+				readStorage("dengluCookie", function (cook) {
+					doPost("/ocm-web/api/noticeQuestionary/zdpageQuery", {
+						customerId: cook.customerId,
+						size: 30
+					}, function (data) {
+						app.data1 = data.content
+					}, function (dat) {}, false, "get");
+				});
+			},
+			//查看
+			look: function (row) {
+				var dataId = row.dataid;
+				var templateId = row.templateId;
+				var url = "https://pro.formtalk.net/w.do";
+				var openUrl = url + "?f=" + templateId + "&d=" + dataId;
+				row.openUrl = openUrl;
+				summer.openWin({
+					id: "sdfsdfsdf",
+					url: "html/diaocha/page.html",
+					isKeep: false,
+					pageParam: row
+				});
+			},
+			fillIn: function (row) {
+				var templateId = row.templateId;
+				var url = "https://pro.formtalk.net/w.do";
+				var id = row.id;
+				var agencyCode = row.agencyCode; //办事处编码
+				var agencyName = row.agencyName; //办事处名称
+				var cityCode = row.cityCode; //城市编码
+				var cityName = row.cityName; //城市名称
+				var divisionCode = row.divisionCode; //事业部编码
+				var divisionName = row.divisionName; //事业部名称
+				//var customerCode = this.$store.state.username;
+				//var customerName = this.$store.state.userloginName;
+				var data4Display = {
+					tempId: id,
+					agencyCode: agencyCode,
+					agencyName: agencyName,
+					cityCode: cityCode,
+					cityName: cityName,
+					divisionCode: divisionCode,
+					divisionName: divisionName,
+					customerCode: this.customerCode,
+					customerName: this.customerName
+				};
+				var openUrl = url + "?f=" + templateId + "&data4Display=" + encodeURIComponent(JSON.stringify(data4Display));
+				row.openUrl = openUrl;
+				summer.openWin({
+					id: "sdfsdfsdf11",
+					url: "html/diaocha/page.html",
+					isKeep: false,
+					pageParam: row
+				});
+			},
+		},
+		mounted: function () {
+
+		},
+		filters: {
+			riqizhuanhuan: function (value) {
+				if (value == "null" || value == null || value == undefined) {
+					return "-";
+				}
+				var date = new Date(value);
+				return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+			},
+		}
+	})
 </script>
 
 <script>
-	summerready = function() {
-		//app.fetchData();
-		readStorage("dengluCookie",function(data){
+	summerready = function () {
+		app.fetchData();
+		readStorage("dengluCookie", function (data) {
 			app.customerCode = data.username;
 			app.customerName = data.customerName;
 		});
