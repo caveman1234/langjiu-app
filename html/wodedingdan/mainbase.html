@@ -270,7 +270,7 @@
 			},
 			orderCode: "01",
 			//billStatusCode  ""->全部|"01"->未提交||"02"->待审核订单|"03"->审核通过|"04"->审核不通过|"05"->已完成
-			billStatusCode: "",
+			// billStatusCode: "",
 			//订单类型
 			poTypeBusinessType: "01,02,04",
 			//+++++++++++++++++++增加搜索字段+++++++++++++++++++++++
@@ -386,6 +386,7 @@
 			},
 			SelectList: function (ind, fun, isTabChange) { //请求某一类型的指定page
 				var _this = this;
+				// alert(app.billStatusCode)
 				readStorage("dengluCookie", function (cook) {
 					//请求服务器
 					var params = {
@@ -403,7 +404,6 @@
 					}
 					// alert(JSON.stringify(params));
 					doPost("/ocm-web/api/b2b/purchase-orders-mobile/search-all-orders", params, function (data) {
-						// alert(JSON.stringify(data.content));
 						fun();
 						//没有数据就返回
 						if (data.content.length == 0 && !isTabChange) {
@@ -418,7 +418,6 @@
 						app.quanbudingdan.pageindex = ind;
 						if (ind == 0 || isTabChange) {
 							app.quanbudingdan.data = data.content;
-
 						} else {
 							app.quanbudingdan.data = app.quanbudingdan.data.concat(data.content);
 						}
@@ -463,7 +462,7 @@
 			},
 			resetParams: function () {
 				// app.poTypeId = "";//订单类型不清空
-				app.billStatusCode = "";
+				// app.billStatusCode = "";
 				app.billCode = "";
 			}
 		},
