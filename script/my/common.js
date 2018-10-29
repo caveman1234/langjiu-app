@@ -201,3 +201,41 @@ function updateAppBack(url){
 		alert(ret.msg);
 	})
 }
+function openCamera(cb,ctx){
+	if(summer.getSysInfo().systemType == "android") {
+		//Android 6以上版本使用此API时需要手动申请权限
+		summer.getPermission(["android.permission.CAMERA","android.permission.READ_PHONE_STATE","android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_EXTERNAL_STORAGE","android.permission.WRITE_EXTERNAL_STORAGE"], function(args) {
+			summer.openCamera({
+				compressionRatio:0.7,
+				cameraType:"custom",
+				orientation:"rear",
+				callback:function(args){
+					summer.fileToBase64({
+						"filePath" : args.compressImgPath,
+						"callback" : function(ret){
+								var base64String = ret.result;
+								cb.call(ctx,args,base64String);
+						}
+					})
+				}
+			});
+		}, function(args) {
+			alert("没有获取到相应权限"); //失败返回illegal access
+		});
+	} else {
+		summer.openCamera({
+			compressionRatio:0.7,
+			cameraType:"custom",
+			orientation:"rear",
+			callback:function(args){
+				summer.fileToBase64({
+					"filePath" : args.compressImgPath,
+					"callback" : function(ret){
+							var base64String = ret.result;
+							cb.call(ctx,args,base64String);
+					}
+				})
+			}
+		});
+	}
+}

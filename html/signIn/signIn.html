@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title></title>
+  <link rel="stylesheet" href="../../css/mui.min.css" />
+  <link rel="stylesheet" href="../../css/icons-extra.css" />
+  <link rel="stylesheet" href="../../css/my.css" />
+  <script src="../../script/jquery.min.js"></script>
+  <script src="../../js/summer.min.js"></script>
+  <script src="../../script/mui.min.js"></script>
+  <script src="../../script/vue.js"></script>
+  <script src="../../script/my/common.js"></script>
+  <style>
+    ::-webkit-input-placeholder {
+      font-size: 12px;
+    }
+
+    * {
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="header" class="mui-bar mui-bar-nav">
+    <a class="mui-icon mui-icon-left-nav back"></a>
+    <h1 class="mui-title">
+      <span>签收</span>
+    </h1>
+  </header>
+  <div id="app" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+
+    <button style="font-size:40px;" @click="singIn">拍照</button>
+    <button style="font-size:40px;" @click="upload">上传</button>
+    <div class="imgContainer">
+      <template v-for="(item,index) in base64StringArrComputed">
+        <img :src="item" :key="index" width="100%" height="400px" />
+      </template>
+    </div>
+
+
+  </div>
+
+</body>
+
+</html>
+
+
+<script>
+  function Ctor() {}
+  var app = new Vue({
+    el: '#app',
+    data: function () {
+      return {
+        base64StringArr: []
+      }
+    },
+    computed: {
+      base64StringArrComputed: function () {
+        return this.base64StringArr.map(function (base64) {
+          return "data:image/jpeg;base64," + base64;
+        });
+      }
+    },
+    methods: {
+      singIn: function () {
+        openCamera(function (args, base64String) {
+          var imgPath = args.imgPath;
+          var compressImgPath = args.compressImgPath;
+          this.base64StringArr.push(base64String);
+          debugger
+        }, this);
+      },
+      upload: function () {
+        var serviceUrl = "/url";
+        var base64String = this.base64StringArr[0];
+        var options = {
+          base64String: serviceUrl,
+          serviceUrl: base64String,
+          successCallback: function (e) {
+
+          },
+          errorCallback: function (e) {
+
+          },
+          progressFunction: function (e) {
+
+          },
+        };
+        this.uploadImage(options);
+      },
+      uploadImage: function (options) {
+        var base64String = options.base64String || "";
+        var serviceUrl = options.serviceUrl || "";
+        var successCallback = options.successCallback || Ctor;
+        var errorCallback = options.errorCallback || Ctor;
+        var progressFunction = options.progressFunction || Ctor;
+        var formData = new FormData();
+        formData.append("base64String", base64String);
+        var xhr = new XMLHttpRequest(); // XMLHttpRequest 对象
+        xhr.responseType = 'text';
+        xhr.open("post", serviceUrl, true); //post方式，url为服务器请求地址，true 该参数规定请求是否异步处理。
+        // xhr.setRequestHeader("token", getValueFromLocalStorage('token'));
+        // xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+        xhr.onload = uploadComplete; //请求完成
+        xhr.onerror = uploadFailed; //请求失败
+        xhr.upload.onprogress = progressFunction; //【上传进度调用方法实现】
+        xhr.send(formData); //开始上传，发送form数据
+        function uploadComplete(e) {
+          var statusCode = e.target.status;
+          if (statusCode == 200) {
+            var fileUrl = e.target.responseText;
+            successCallback(fileUrl);
+          } else if (statusCode == 500) {
+            var businessException = e.target.responseText;
+            alert("上传文件失败，服务器异常500");
+            if (errorCallback) {
+              errorCallback(e, businessException);
+            }
+          } else {
+
+          }
+        };
+
+        function uploadFailed(e) {
+          if (errorCallback) {
+            errorCallback(e);
+          } else {
+            alert("上传文件失败");
+          }
+        };
+
+        function Percentage(num, total) {
+          return (Math.round(num / total * 10000) / 100.00);
+          // return (Math.round(num / total * 10000) / 100.00 + "%");// 小数点后两位百分比
+        };
+
+        function progressFunction(e) {
+          if (processCallback) {
+            // 计算百分比
+            var totalSize = e.total;
+            var loadedSize = e.loaded;
+            var bfb = Percentage(loadedSize, totalSize);
+            processCallback(bfb);
+          }
+        }
+      }
+    },
+    mounted: function () {
+
+    },
+    filters: {
+      riqizhuanhuan: function (value) {
+        if (value == "null" || value == null || value == undefined) {
+          return "-";
+        }
+        var date = new Date(value);
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+      },
+    }
+  })
+</script>
+
+<script>
+  summerready = function () {
+    // app.fetchData();
+  }
+</script>

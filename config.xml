@@ -9,8 +9,8 @@
   <theme>blue</theme>  
   <icon relativePath="css/themes/default/app">app</icon>  
   <versionCode>2</versionCode>  
-  <versionBuild>2.0.17</versionBuild>  
-  <versionName>2.0.17</versionName>  
+  <versionBuild>2.0.20</versionBuild>  
+  <versionName>2.0.20</versionName>  
   <orientation>unspecified</orientation>  
   <permission id="android.permission.INTERNET"/>  
   <statusBarStyle>dark</statusBarStyle>  
