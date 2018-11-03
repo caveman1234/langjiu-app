@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title></title>
+  <link rel="stylesheet" href="../../../css/mui.min.css" />
+  <link rel="stylesheet" href="../../../css/icons-extra.css" />
+  <link rel="stylesheet" href="../../../css/my.css" />
+  <link rel="stylesheet" href="../../../css/mui.picker.css" />
+
+  <link rel="stylesheet" href="../../../css/iSlider.css" />
+
+  <script src="../../../script/jquery.min.js"></script>
+  <script src="../../../js/summer.min.js"></script>
+  <script src="../../../script/mui.min.js"></script>
+  <script src="../../../script/vue.js"></script>
+  <script src="../../../script/my/common.js"></script>
+  <script src="../../../script/mui.picker.min.js"></script>
+
+  <script src="../../../script/iSlider.js"></script>
+  <script src="../../../script/iSlider.animate.js"></script>
+  <script src="../../../script/iSlider.plugin.dot.js"></script>
+  <script src="../../../script/iSlider.plugin.button.js"></script>
+  <style>
+    ::-webkit-input-placeholder {
+      font-size: 12px;
+    }
+
+    * {
+      font-size: 14px;
+      box-sizing: border-box;
+
+    }
+
+    .siginHeader {
+      line-height: 30px;
+    }
+
+    .sigindetail {}
+
+    .sigindetail .item-content {
+      display: flex;
+      line-height: 30px;
+    }
+
+    .item-name {
+      flex: 0 0 110px;
+      text-align: right;
+      line-height: 30px;
+    }
+
+    .item-value {
+      padding-left: 10px;
+      line-height: 30px;
+    }
+
+    .padding-left-10 {
+      padding-left: 10px;
+    }
+
+    #iSlider-wrapper {
+      width: 100%;
+      height: 300px;
+    }
+    .mui-content>.mui-table-view:first-child {
+        margin-top: 0px;
+    }
+  </style>
+</head>
+
+
+<body>
+  <div id="appContainer" style="height:100%;">
+    <header id="header" class="mui-bar mui-bar-nav">
+      <a class="mui-icon mui-icon-left-nav back"></a>
+      <h1 class="mui-title">
+        <span>签收</span>
+      </h1>
+    </header>
+    <!-- <button type="button" class="mui-btn mui-btn-outlined">详情</button> -->
+
+
+
+    <div class="mui-content" style="height: 100%;height:100%;background-color: #FFFFFF; padding-top: 44px;overflow: auto">
+
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media sigindetail">
+          <div class="siginHeader">签收明细:</div>
+          <div class="item-content">
+            <div class="item-name">订单编码:</div>
+            <div class="item-value" v-clock>{{orderData.orderCode}}</div>
+          </div>
+          <div class="item-content">
+            <div class="item-name">产品编码:</div>
+            <div class="item-value" v-clock>{{orderData.productCode}}</div>
+          </div>
+          <div class="item-content">
+            <div class="item-name">产品名称:</div>
+            <div class="item-value" v-clock>{{orderData.productName}}</div>
+          </div>
+          <div class="item-content">
+            <div class="item-name">发货数量(件):</div>
+            <div class="item-value" v-clock>{{orderData.deliverAmount}}</div>
+          </div>
+        </li>
+      </ul>
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media">
+          <div class="siginHeader ">请上传照片</div>
+          <button @tap="takePhoto" type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="float:right;">拍照</button>
+        </li>
+      </ul>
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media">
+          <div id="iSlider-wrapper"></div>
+        </li>
+      </ul>
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media">
+          <div class="siginHeader ">备注:</div>
+          <form class="mui-input-group">
+              <div class="mui-input-row" style="min-height: 100px;">
+                  <textarea v-model="remarks" cols="20" rows="3"  placeholder="请填写备注"></textarea>
+              </div>
+          </form>
+        </li>
+      </ul>
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media" style="height:50px;">
+          <button @tap="confirm" type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="float:right;">确认</button>
+        </li>
+      </ul>
+
+
+
+    </div>
+
+  </div>
+</body>
+
+</html>
+
+
+<script>
+  var orderData = {
+    orderCode: "ODC20180000001", //订单编码
+    productCode: "PC20180000001", //产品编码
+    productName: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
+    deliverAmount: 1000, //发货数量
+    signInImages: ["https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=2e3ab7ac17fd80c48edf3cb05db91569&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b6ca556079da0000009af03336db.jpg%40900w_1l_2o_100sh.jpg", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=33ee64fb0a74a892b56efb69d49173c2&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b0d5565add936ac7251be83e7d81.jpg%401280w_1l_2o_100sh.jpg"],
+    remarks: "111备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
+  };
+
+  var app = new Vue({
+    el: '#appContainer',
+    data: function () {
+      return {
+        imgPath:[],
+        base64StringArr: [],
+        orderData: {},
+        remarks: "", //备注
+      }
+    },
+    computed: {
+      base64StringArrComputed: function () {
+        return this.base64StringArr.map(function (base64) {
+          return "data:image/jpeg;base64," + base64;
+        });
+      }
+    },
+    methods: {
+      //拍照
+      takePhoto: function () {
+        openCamera(function (args, base64String) {
+          var imgPath = args.imgPath;
+          var compressImgPath = args.compressImgPath;
+          this.base64StringArr.push(base64String);
+          this.imgPath.push(imgPath);
+          //初始化图片插件
+          app.initISlider(app.imgPath);
+          // app.initISlider(app.base64StringArrComputed);
+        }, this);
+      },
+      //格式化图片数据格式
+      formatImages: function (images) {
+        return images.map(function (v) {
+          return {
+            content: v
+          }
+        });
+      },
+      //初始化图片
+      initISlider: function (images) {
+        var dom = document.getElementById('iSlider-wrapper');
+        $(".islider-dot-wrap").remove();
+        dom.innerHTML = "";
+        images = this.formatImages(images);
+        var S = new iSlider({
+          dom: dom,
+          data: images,
+          isLooping: 1,
+          isOverspread: 1,
+          animateTime: 800, // ms
+          plugins: ['dot', 'button']
+        });
+      },
+      //确认
+      confirm: function () {
+        if(this.base64StringArr.length === 0){
+          toast("请拍照");
+          return;
+        }
+        var params = {
+          images: this.base64StringArr,
+          remarks: this.remarks,
+        }
+        console.log(params);
+        var url = "http://localhost:9999/upload-image";
+        showLoadingBar("正在上传");
+        // summer.closeWin();
+        summer.closeToWin({
+          id:"main"
+        });
+        $.ajax({
+          type: "post",
+          contentType: "application/json; charset=utf-8",
+          url: url,
+          data: JSON.stringify(params),
+          success: function (res) {
+            toast("签收成功");
+            hideLoadingBar();
+            summer.closeWin();
+          },
+          error:function(){
+            toast("错误");
+            hideLoadingBar();
+          }
+        });
+      }
+    },
+    mounted: function () {
+      
+    },
+    filters: {
+      riqizhuanhuan: function (value) {
+        if (value == "null" || value == null || value == undefined) {
+          return "-";
+        }
+        var date = new Date(value);
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+      },
+    }
+  })
+</script>
+
+<script>
+  summerready = function () {
+    var orderData = summer.pageParam.orderData;
+    app.orderData = orderData;
+  }
+</script>

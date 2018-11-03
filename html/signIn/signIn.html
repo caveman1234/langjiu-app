@@ -12,11 +12,13 @@
   <link rel="stylesheet" href="../../css/mui.min.css" />
   <link rel="stylesheet" href="../../css/icons-extra.css" />
   <link rel="stylesheet" href="../../css/my.css" />
+  <link rel="stylesheet" href="../../css/mui.picker.css" />
   <script src="../../script/jquery.min.js"></script>
   <script src="../../js/summer.min.js"></script>
   <script src="../../script/mui.min.js"></script>
   <script src="../../script/vue.js"></script>
   <script src="../../script/my/common.js"></script>
+  <script src="../../script/mui.picker.min.js"></script>
   <style>
     ::-webkit-input-placeholder {
       font-size: 12px;
@@ -26,137 +28,263 @@
       font-size: 12px;
       box-sizing: border-box;
     }
+    .itemContainer{
+      display: flex;
+      line-height: 30px;
+    }
+    .textArea{
+      flex: 0 0 100px;
+      text-align: right;
+      font-size: 14px;
+    }
+    .contentArea{
+      flex: 1;
+      padding-left: 10px;
+      font-size: 14px;
+    }
+    .handleArea{
+      flex: 0 0 70px;
+    }
+    .mui-content>.mui-table-view:first-child {
+        margin-top: 0px;
+    }
   </style>
 </head>
 
+
 <body>
-  <header id="header" class="mui-bar mui-bar-nav">
-    <a class="mui-icon mui-icon-left-nav back"></a>
-    <h1 class="mui-title">
-      <span>签收</span>
-    </h1>
-  </header>
-  <div id="app" class="mui-content" style="height: 100%;background-color: #FFFFFF;">
+  <div id="appContainer" style="height:100%;">
+    <header id="header" class="mui-bar mui-bar-nav">
+      <a class="mui-icon mui-icon-left-nav back"></a>
+      <h1 class="mui-title">
+        <span>签收</span>
+      </h1>
+      <a @click="handlePopover" id="openPopover" class="mui-icon mui-icon-search mui-pull-right"></a>
 
-    <button style="font-size:40px;" @click="singIn">拍照</button>
-    <button style="font-size:40px;" @click="upload">上传</button>
-    <div class="imgContainer">
-      <template v-for="(item,index) in base64StringArrComputed">
-        <img :src="item" :key="index" width="100%" height="400px" />
-      </template>
+    </header>
+    <!-- <button type="button" class="mui-btn mui-btn-outlined">详情</button> -->
+
+
+
+    <div class="mui-content" style="height: 100%;height:100%;background-color: #FFFFFF; padding-top: 44px;overflow: auto">
+
+      <ul class="mui-table-view">
+        <li v-for="(item,index) in orderData" :key="index" class="mui-table-view-cell mui-media">
+          <div class="itemContainer">
+            <div class="textArea">发货单号:</div>
+            <div class="contentArea" v-clock>{{item.deliverNumber}}</div>
+            <div class="handleArea">
+              <button @tap="singin(item)" v-if="item.isSingin === 0" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">签收</button>
+              <button @tap="detail(item)" v-if="item.isSingin === 1" type="button" class="mui-btn mui-btn-outlined">详情</button>
+            </div>
+          </div>
+          <div class="itemContainer">
+            <div class="textArea">发货日期:</div>
+            <div class="contentArea" v-clock>{{item.deliverDate | riqizhuanhuan}}</div>
+          </div>
+          <div class="itemContainer">
+            <div class="textArea">发货数量:</div>
+            <div class="contentArea" v-clock>{{item.deliverAmount}}</div>
+          </div>
+          <div class="itemContainer">
+            <div class="textArea">是否已签收:</div>
+            <div class="contentArea" v-clock>{{item.isSingin === 1 ? "是" : "否"}}</div>
+          </div>
+        </li>
+      </ul>
+
     </div>
+    <div id="popover" class="mui-popover" style="width:100%;">
+      <ul class="mui-table-view">
 
+        <li class="mui-table-view-cell">
+          <div class="mui-row">
+            <div @tap="startDateFun" class="mui-col-xs-6 mui-col-sm-6" style="font-size:12px;" v-clock>发货开始日期:{{searchParams.startDate}}</div>
+            <div @tap="endDateFun" class="mui-col-xs-6 mui-col-sm-6" style="font-size:12px;" v-clock>发货结束日期:{{searchParams.endDate}}</div>
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-row">
+            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">发货单号:</span>
+            <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
+              <input v-model="searchParams.deliverNumber" type="text" style="margin-bottom: 0px;height: 28px;" placeholder="请输入发货单号">
+            </div>
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-row">
+            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">订单编码:</span>
+            <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
+              <input v-model="searchParams.orderNumber" type="text" style="margin-bottom: 0px;height: 28px;" placeholder="请输入订单编码">
+            </div>
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-row">
+            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">是否签收:</span>
+            <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
+              <input v-model="searchParams.isSingin" type="checkbox" style="height: 28px;line-height: 30px;">
+              <span style="vertical-align: top;line-height: 30px;">{{searchParams.isSingin ? "是" :"否"}}</span>
+            </div>
+          </div>
+        </li>
 
+        <li class="mui-table-view-cell ">
+          <div style="float: right;">
+            <button @click="headerSearch" style="line-height:13px;" type="button" class="mui-btn mui-btn-primary mui-btn-outlined mui-navigate-right">
+              <i class="mui-icon mui-icon-search"></i>搜索</button>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
-
 </body>
 
 </html>
 
 
 <script>
-  function Ctor() {}
+  var orderData = [{
+      deliverNumber: "BO20180000001", //发货单号
+      deliverDate: new Date().getTime(), //发货日期
+      deliverAmount: 100, //发货数量
+      isSingin: 1, //是否签收
+    },
+    {
+      deliverNumber: "BO20180000002", //发货单号
+      deliverDate: new Date().getTime(), //发货日期
+      deliverAmount: 100, //发货数量
+      isSingin: 1, //是否签收
+    },
+    {
+      deliverNumber: "BO20180000003", //发货单号
+      deliverDate: new Date().getTime(), //发货日期
+      deliverAmount: 10011, //发货数量
+      isSingin: 0, //是否签收
+    },
+    {
+      deliverNumber: "BO20180000004", //发货单号
+      deliverDate: new Date().getTime(), //发货日期
+      deliverAmount: 10011, //发货数量
+      isSingin: 0, //是否签收
+    },
+  ];
+  var currentDate = new Date().getTime();
+  var startDate = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+  var endDate = new Date(currentDate);
+  var startDateStr = startDate.getFullYear() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getDate();
+  var endDateStr = endDate.getFullYear() + "/" + (endDate.getMonth() + 1) + "/" + endDate.getDate();
   var app = new Vue({
-    el: '#app',
+    el: '#appContainer',
     data: function () {
       return {
-        base64StringArr: []
+        searchParams: {
+          deliverDate: new Date().getTime(), //发货日期
+          deliverNumber: "", //发货单号
+          orderNumber: "", //订单编号
+          isSingin: false, //是否签收
+          startDate: startDateStr, //开始日期
+          endDate: endDateStr, //结束日期
+        },
+        orderData: orderData, //单据数据
       }
     },
     computed: {
-      base64StringArrComputed: function () {
-        return this.base64StringArr.map(function (base64) {
-          return "data:image/jpeg;base64," + base64;
-        });
-      }
+
     },
     methods: {
-      singIn: function () {
-        openCamera(function (args, base64String) {
-          var imgPath = args.imgPath;
-          var compressImgPath = args.compressImgPath;
-          this.base64StringArr.push(base64String);
-          debugger
-        }, this);
+      //弹框
+      handlePopover: function () {
+        mui('#popover.mui-popover').popover('toggle', document.getElementById("openPopover"));
       },
-      upload: function () {
-        var serviceUrl = "/url";
-        var base64String = this.base64StringArr[0];
-        var options = {
-          base64String: serviceUrl,
-          serviceUrl: base64String,
-          successCallback: function (e) {
-
-          },
-          errorCallback: function (e) {
-
-          },
-          progressFunction: function (e) {
-
-          },
-        };
-        this.uploadImage(options);
+      //弹框搜索
+      headerSearch: function () {
+        var searchParams = $.extend({}, this.searchParams, {
+          startDate: new Date(this.searchParams.startDate).getTime(),
+          endDate: new Date(this.searchParams.endDate).getTime(),
+        });
+        console.log(searchParams);
+        var url = "http://localhost:9999/upload-image";
+        $.ajax({
+          type: "post",
+          contentType: "application/json; charset=utf-8",
+          url: url,
+          data: JSON.stringify(searchParams),
+          success: function (res) {
+            res.data = app.orderData;
+            app.handlePopover();
+          }
+        });
       },
-      uploadImage: function (options) {
-        var base64String = options.base64String || "";
-        var serviceUrl = options.serviceUrl || "";
-        var successCallback = options.successCallback || Ctor;
-        var errorCallback = options.errorCallback || Ctor;
-        var progressFunction = options.progressFunction || Ctor;
-        var formData = new FormData();
-        formData.append("base64String", base64String);
-        var xhr = new XMLHttpRequest(); // XMLHttpRequest 对象
-        xhr.responseType = 'text';
-        xhr.open("post", serviceUrl, true); //post方式，url为服务器请求地址，true 该参数规定请求是否异步处理。
-        // xhr.setRequestHeader("token", getValueFromLocalStorage('token'));
-        // xhr.setRequestHeader('Content-Type', 'multipart/form-data');
-        xhr.onload = uploadComplete; //请求完成
-        xhr.onerror = uploadFailed; //请求失败
-        xhr.upload.onprogress = progressFunction; //【上传进度调用方法实现】
-        xhr.send(formData); //开始上传，发送form数据
-        function uploadComplete(e) {
-          var statusCode = e.target.status;
-          if (statusCode == 200) {
-            var fileUrl = e.target.responseText;
-            successCallback(fileUrl);
-          } else if (statusCode == 500) {
-            var businessException = e.target.responseText;
-            alert("上传文件失败，服务器异常500");
-            if (errorCallback) {
-              errorCallback(e, businessException);
-            }
-          } else {
-
-          }
+      //签收
+      singin: function (item) {
+        var orderData = {
+          orderCode: item.deliverNumber, //订单编码
+          productCode: "PC20180000001", //产品编码
+          productName: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
+          deliverAmount: 1000, //发货数量
         };
-
-        function uploadFailed(e) {
-          if (errorCallback) {
-            errorCallback(e);
-          } else {
-            alert("上传文件失败");
+        summer.openWin({
+          id: "doSignIn",
+          url: "html/signIn/doSignIn/doSignIn.html",
+          pageParam: {
+            orderData: orderData
           }
+        });
+      },
+      //详情
+      detail: function (item) {
+        var orderData = {
+          orderCode: item.deliverNumber, //订单编码
+          productCode: "PC20180000001", //产品编码
+          productName: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
+          deliverAmount: 1000, //发货数量
+          signInImages: ["https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=2e3ab7ac17fd80c48edf3cb05db91569&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b6ca556079da0000009af03336db.jpg%40900w_1l_2o_100sh.jpg", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=33ee64fb0a74a892b56efb69d49173c2&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b0d5565add936ac7251be83e7d81.jpg%401280w_1l_2o_100sh.jpg"],
+          remarks: "111备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
         };
-
-        function Percentage(num, total) {
-          return (Math.round(num / total * 10000) / 100.00);
-          // return (Math.round(num / total * 10000) / 100.00 + "%");// 小数点后两位百分比
-        };
-
-        function progressFunction(e) {
-          if (processCallback) {
-            // 计算百分比
-            var totalSize = e.total;
-            var loadedSize = e.loaded;
-            var bfb = Percentage(loadedSize, totalSize);
-            processCallback(bfb);
+        summer.openWin({
+          id: "signInDetail",
+          url: "html/signIn/signInDetail/signInDetail.html",
+          pageParam: {
+            orderData: orderData
           }
+        });
+      },
+      startDateFun: function () {
+        var _this = this;
+        var beginDate = null;
+        var endDate = null;
+        if (_this.searchParams.endDate) {
+          endDate = _this.searchParams.endDate;
         }
-      }
+        var dtPicker = new mui.DtPicker({
+          type: "date",
+          beginDate: beginDate && new Date(beginDate),
+          endDate: endDate && new Date(endDate)
+        });
+        dtPicker.show(function (obj) {
+          _this.searchParams.startDate = obj.value.replace(/-/g, "/")
+        });
+      },
+      endDateFun: function () {
+        var _this = this;
+        var beginDate = null;
+        var endDate = null;
+        if (_this.searchParams.startDate) {
+          beginDate = _this.searchParams.startDate;
+        }
+        var dtPicker = new mui.DtPicker({
+          type: "date",
+          beginDate: beginDate && new Date(beginDate),
+          endDate: endDate && new Date(endDate),
+        });
+        dtPicker.show(function (obj) {
+          _this.searchParams.endDate = obj.value.replace(/-/g, "/")
+          console.log(obj)
+        });
+      },
     },
-    mounted: function () {
-
-    },
+    mounted: function () {},
     filters: {
       riqizhuanhuan: function (value) {
         if (value == "null" || value == null || value == undefined) {
