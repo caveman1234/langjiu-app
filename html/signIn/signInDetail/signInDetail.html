@@ -94,19 +94,19 @@
           <div class="siginHeader">签收明细:</div>
           <div class="item-content">
             <div class="item-name">订单编码:</div>
-            <div class="item-value" v-clock>{{orderData.orderCode}}</div>
+            <div class="item-value" v-clock>{{orderData.crmOrderNo}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">产品编码:</div>
-            <div class="item-value" v-clock>{{orderData.productCode}}</div>
+            <div class="item-value" v-clock>{{orderData.invcode}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">产品名称:</div>
-            <div class="item-value" v-clock>{{orderData.productName}}</div>
+            <div class="item-value" v-clock>{{orderData.invname}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">发货数量(件):</div>
-            <div class="item-value" v-clock>{{orderData.deliverAmount}}</div>
+            <div class="item-value" v-clock>{{orderData.nastnumber}}</div>
           </div>
         </li>
       </ul>
@@ -136,10 +136,10 @@
 
 <script>
   var orderData = {
-    orderCode: "ODC20180000001", //订单编码
-    productCode: "PC20180000001", //产品编码
-    productName: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
-    deliverAmount: 1000, //发货数量
+    crmOrderNo: "ODC20180000001", //订单编码
+    invcode: "PC20180000001", //产品编码
+    invname: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
+    nastnumber: 1000, //发货数量
     signInImages: ["https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=2e3ab7ac17fd80c48edf3cb05db91569&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b6ca556079da0000009af03336db.jpg%40900w_1l_2o_100sh.jpg", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=33ee64fb0a74a892b56efb69d49173c2&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b0d5565add936ac7251be83e7d81.jpg%401280w_1l_2o_100sh.jpg"],
     remarks: "111备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
   };
