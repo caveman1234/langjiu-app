@@ -143,8 +143,16 @@
           <div class="mui-row">
             <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">是否已签收:</span>
             <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
-              <input v-model="searchParams.isSingin" type="checkbox" style="height: 28px;line-height: 30px;">
-              <span style="vertical-align: top;line-height: 30px;">{{searchParams.isSingin ? "是" :"否"}}</span>
+              <!-- <input v-model="searchParams.isSingin" type="checkbox" style="height: 28px;line-height: 30px;">
+              <span style="vertical-align: top;line-height: 30px;">{{searchParams.isSingin ? "是" :"否"}}</span> -->
+              
+              <label>
+                <input v-model="searchParams.isSingin" name="sex" type="radio" :value="true" />已签收
+              </label>
+              <label style="margin-left: 20px;">
+                <input v-model="searchParams.isSingin" name="sex" type="radio" :value="false" />未签收
+              </label>
+
             </div>
           </div>
         </li>
@@ -221,7 +229,7 @@
         mui('#popover.mui-popover').popover('toggle', document.getElementById("openPopover"));
       },
       //弹框搜索
-      headerSearch: function () {
+      headerSearch: function (isFirstSearch) {
         var searchParams = $.extend({}, this.searchParams, {
           startDate: this.searchParams.startDate,
           endDate: this.searchParams.endDate,
@@ -242,6 +250,10 @@
           pageIndex: 0,
           pageSize: 30
         };
+        if(isFirstSearch === true){
+          delete realParams.search_GTE_vreceiveDate;
+          delete realParams.search_LTE_vreceiveDate;
+        }
         Object.keys(realParams).forEach(function (key) {
           if (realParams[key] === "") {
             delete realParams[key];
@@ -267,7 +279,9 @@
               return;
             }
             app.orderData = res.data.content;
-            app.handlePopover();
+            if(isFirstSearch !== true){
+              app.handlePopover();
+            }
             hideLoadingBar();
           },
           error: function (res, a, b, c) {
@@ -381,7 +395,7 @@
     readStorage("dengluCookie", function (cook) {
       app.customerCode = cook.username;
       app.customerId = cook.customerId;
-      app.headerSearch();
+      app.headerSearch(true);
     })
   }
 </script>
