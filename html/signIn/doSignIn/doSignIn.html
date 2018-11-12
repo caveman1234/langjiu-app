@@ -88,25 +88,33 @@
 
 
     <div class="mui-content" style="height: 100%;height:100%;background-color: #FFFFFF; padding-top: 44px;overflow: auto">
-
       <ul class="mui-table-view">
+        <li class="mui-table-view-cell mui-media" style="height:50px;">
+          <button @tap="confirm" type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="float:right;">确认</button>
+        </li>
+      </ul>
+      <ul v-for="(item,index) in orderData" :key="index" class="mui-table-view">
         <li class="mui-table-view-cell mui-media sigindetail">
           <div class="siginHeader">签收明细:</div>
           <div class="item-content">
-            <div class="item-name">订单编码:</div>
-            <div class="item-value" v-clock>{{orderData.crmOrderNo}}</div>
+            <div class="item-name">CRM订单编码:</div>
+            <div class="item-value" v-clock>{{item.crmorder}}</div>
+          </div>
+          <div class="item-content">
+            <div class="item-name">NC订单编码:</div>
+            <div class="item-value" v-clock>{{item.ncorder}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">产品编码:</div>
-            <div class="item-value" v-clock>{{orderData.invcode}}</div>
+            <div class="item-value" v-clock>{{item.invcode}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">产品名称:</div>
-            <div class="item-value" v-clock>{{orderData.invname}}</div>
+            <div class="item-value" v-clock>{{item.invname}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">发货数量(件):</div>
-            <div class="item-value" v-clock>{{orderData.nastnumber}}</div>
+            <div class="item-value" v-clock>{{item.nastnumber}}</div>
           </div>
         </li>
       </ul>
@@ -125,17 +133,13 @@
         <li class="mui-table-view-cell mui-media">
           <div class="siginHeader ">备注:</div>
           <form class="mui-input-group">
-              <div class="mui-input-row" style="min-height: 100px;">
-                  <textarea v-model="remarks" cols="20" rows="3"  placeholder="请填写备注"></textarea>
-              </div>
+            <div class="mui-input-row" style="min-height: 100px;">
+              <textarea v-model="remarks" cols="20" rows="3" placeholder="请填写备注"></textarea>
+            </div>
           </form>
         </li>
       </ul>
-      <ul class="mui-table-view">
-        <li class="mui-table-view-cell mui-media" style="height:50px;">
-          <button @tap="confirm" type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="float:right;">确认</button>
-        </li>
-      </ul>
+      
 
 
 
@@ -161,11 +165,12 @@
     el: '#appContainer',
     data: function () {
       return {
-        imgPath:[],
+        imgPath: [],
         base64StringArr: [],
         orderData: {},
         remarks: "", //备注
-        customerCode:"",//经销商编码
+        customerCode: "", //经销商编码
+        csalereceiveid:"",//单据id
       }
     },
     computed: {
@@ -181,8 +186,8 @@
         openCamera(function (args, base64String) {
           var imgPath = args.imgPath;
           var compressImgPath = args.compressImgPath;
-          this.base64StringArr.push(base64String);
-          this.imgPath.push(imgPath);
+          this.base64StringArr.unshift(base64String);
+          this.imgPath.unshift(imgPath);
           //初始化图片插件
           app.initISlider(app.imgPath);
           // app.initISlider(app.base64StringArrComputed);
@@ -213,32 +218,38 @@
       },
       //确认
       confirm: function () {
-        if(this.base64StringArr.length === 0){
+        if (this.base64StringArr.length === 0) {
           toast("请拍照");
           return;
         }
         var params = {
-          signInImages: this.base64StringArr,
-          remarks: this.remarks,
+          // custcode:app.customerCode,//经销商编码
+          csalereceiveid: app.csalereceiveid,
+          picId: this.base64StringArr.toString(),
+          vmemo: this.remarks,
+          soSalesignBList: [], //子表明细
         }
         console.log(params);
-        var url = "http://localhost:9999/upload-image";
+        var url = "http://172.192.100.21:8080/receiveme/receive/sign";
         showLoadingBar("正在上传");
-        // summer.closeWin();
-        summer.closeToWin({
-          id:"main"
-        });
+
         $.ajax({
           type: "post",
           contentType: "application/json; charset=utf-8",
           url: url,
           data: JSON.stringify(params),
           success: function (res) {
+            if(res.status == 0){
+              alert(res.msg);
+              return;
+            }
             toast("签收成功");
             hideLoadingBar();
-            summer.closeWin();
+            summer.closeToWin({
+              id: "main"
+            });
           },
-          error:function(){
+          error: function () {
             toast("错误");
             hideLoadingBar();
           }
@@ -246,7 +257,7 @@
       }
     },
     mounted: function () {
-      
+
     },
     filters: {
       riqizhuanhuan: function (value) {
@@ -262,8 +273,8 @@
 
 <script>
   summerready = function () {
-    var orderData = summer.pageParam.orderData;
-    app.orderData = orderData;
+    app.orderData = summer.pageParam.orderData;
+    app.csalereceiveid = summer.pageParam.csalereceiveid;
     readStorage("dengluCookie", function (cook) {
       app.customerCode = cook.username;
     })

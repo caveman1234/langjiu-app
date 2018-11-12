@@ -89,39 +89,46 @@
 
     <div class="mui-content" style="height: 100%;height:100%;background-color: #FFFFFF; padding-top: 44px;overflow: auto">
 
-      <ul class="mui-table-view">
+      <ul v-for="(item,i) in orderData" :key="i" class="mui-table-view">
         <li class="mui-table-view-cell mui-media sigindetail">
           <div class="siginHeader">签收明细:</div>
           <div class="item-content">
-            <div class="item-name">订单编码:</div>
-            <div class="item-value" v-clock>{{orderData.crmOrderNo}}</div>
+            <div class="item-name">CRM订单编码:</div>
+            <div class="item-value" v-clock>{{item.crmorder }}</div>
+          </div>
+          <div class="item-content">
+            <div class="item-name">NC订单编码:</div>
+            <div class="item-value" v-clock>{{item.ncorder }}</div>
           </div>
           <div class="item-content">
             <div class="item-name">产品编码:</div>
-            <div class="item-value" v-clock>{{orderData.invcode}}</div>
+            <div class="item-value" v-clock>{{item.invcode}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">产品名称:</div>
-            <div class="item-value" v-clock>{{orderData.invname}}</div>
+            <div class="item-value" v-clock>{{item.invname}}</div>
           </div>
           <div class="item-content">
             <div class="item-name">发货数量(件):</div>
-            <div class="item-value" v-clock>{{orderData.nastnumber}}</div>
+            <div class="item-value" v-clock>{{item.nastnumber}}</div>
           </div>
         </li>
       </ul>
       <ul class="mui-table-view">
         <li class="mui-table-view-cell mui-media">
           <div class="siginHeader ">签收照片:</div>
-          <div>
-            <div id="iSlider-wrapper"></div>
+          <div v-for="(item,i) in images" :key="i">
+            <img width="100%" :src="item" alt="签收图片">
           </div>
+          <!-- <div>
+            <div id="iSlider-wrapper"></div>
+          </div> -->
         </li>
       </ul>
       <ul class="mui-table-view">
         <li class="mui-table-view-cell mui-media">
           <div class="siginHeader ">备注:</div>
-          <div class="padding-left-10" v-clock>{{orderData.remarks}}</div>
+          <div class="padding-left-10" v-clock>{{remarks}}</div>
         </li>
       </ul>
 
@@ -136,19 +143,27 @@
 
 <script>
   var orderData = {
-    crmOrderNo: "ODC20180000001", //订单编码
-    invcode: "PC20180000001", //产品编码
-    invname: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
-    nastnumber: 1000, //发货数量
+    soSalesignBList:[
+      {
+        crmOrderNo: "ODC20180000001", //订单编码
+        invcode: "PC20180000001", //产品编码
+        invname: "111红花郎（42）度，等等等等等等等等等等等等等等等等等等等等等等等等", //产品名称
+        nastnumber: 1000, //发货数量
+      
+      }
+    ],//子表，
     signInImages: ["https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=2e3ab7ac17fd80c48edf3cb05db91569&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b6ca556079da0000009af03336db.jpg%40900w_1l_2o_100sh.jpg", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=33ee64fb0a74a892b56efb69d49173c2&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b0d5565add936ac7251be83e7d81.jpg%401280w_1l_2o_100sh.jpg"],
-    remarks: "111备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
+
+     remarks: "111备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
   };
 
   var app = new Vue({
     el: '#appContainer',
     data: function () {
       return {
-        orderData: {}
+        orderData: [],
+        images:[],
+        remarks:""
       }
     },
     computed: {
@@ -156,11 +171,7 @@
     },
     methods: {
       initISlider: function () {
-        var images = app.orderData.signInImages.map(function(v){
-          return {
-            content:v
-          }
-        });
+        var images = app.images
         var S = new iSlider({
           dom: document.getElementById('iSlider-wrapper'),
           data: images,
@@ -188,8 +199,9 @@
 
 <script>
   summerready = function () {
-    var orderData = summer.pageParam.orderData;
-    app.orderData = orderData;
-    app.initISlider();
+    app.orderData = summer.pageParam.orderData;//[]
+    app.images = summer.pageParam.signId.split(",");//图片
+    app.remarks = summer.pageParam.signremark;//备注
+    // app.initISlider();
   }
 </script>

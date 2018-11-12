@@ -48,6 +48,9 @@
     .mui-content>.mui-table-view:first-child {
         margin-top: 0px;
     }
+    .mui-popover .mui-table-view{
+      max-height: 335px !important;
+    }
   </style>
 </head>
 
@@ -74,9 +77,17 @@
             <div class="textArea">发货单号:</div>
             <div class="contentArea" v-clock>{{item.vreceiveCode}}</div>
             <div class="handleArea">
-              <button @tap="singin(item)" v-if="item.isSingin === 0" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">签收</button>
-              <button @tap="detail(item)" v-if="item.isSingin === 1" type="button" class="mui-btn mui-btn-outlined">详情</button>
+              <button @tap="singin(item)" v-if="item.issign == 0" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">签收</button>
+              <button @tap="detail(item)" v-if="item.issign == 1" type="button" class="mui-btn mui-btn-outlined">详情</button>
             </div>
+          </div>
+          <div class="itemContainer">
+            <div class="textArea">CRM订单编码:</div>
+            <div class="contentArea" v-clock>{{item.crmOrderNo}}</div>
+          </div>
+          <div class="itemContainer">
+            <div class="textArea">NC订单编码:</div>
+            <div class="contentArea" v-clock>{{item.ncOrderNo}}</div>
           </div>
           <div class="itemContainer">
             <div class="textArea">发货日期:</div>
@@ -88,7 +99,7 @@
           </div>
           <div class="itemContainer">
             <div class="textArea">是否已签收:</div>
-            <div class="contentArea" v-clock>{{item.isSingin === 1 ? "是" : "否"}}</div>
+            <div class="contentArea" v-clock>{{item.issign == 1 ? "是" : "否"}}</div>
           </div>
         </li>
       </ul>
@@ -114,15 +125,23 @@
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-row">
-            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">订单编码:</span>
+            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">CRM订单编码:</span>
             <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
-              <input v-model="searchParams.crmOrderNo" type="text" style="margin-bottom: 0px;height: 28px;" placeholder="请输入订单编码">
+              <input v-model="searchParams.crmOrderNo" type="text" style="margin-bottom: 0px;height: 28px;" placeholder="请输入CRM订单编码">
             </div>
           </div>
         </li>
         <li class="mui-table-view-cell">
           <div class="mui-row">
-            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">是否签收:</span>
+            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">NC订单编码:</span>
+            <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
+              <input v-model="searchParams.ncOrderNo" type="text" style="margin-bottom: 0px;height: 28px;" placeholder="请输入NC订单编码">
+            </div>
+          </div>
+        </li>
+        <li class="mui-table-view-cell">
+          <div class="mui-row">
+            <span style="line-height:30px;" class="mui-col-xs-3 mui-col-sm-3">是否已签收:</span>
             <div class="mui-col-xs-9 mui-col-sm-9" style="margin:0;padding:3px;">
               <input v-model="searchParams.isSingin" type="checkbox" style="height: 28px;line-height: 30px;">
               <span style="vertical-align: top;line-height: 30px;">{{searchParams.isSingin ? "是" :"否"}}</span>
@@ -186,9 +205,11 @@
           isSingin: false, //是否签收
           startDate: startDateStr, //开始日期
           endDate: endDateStr, //结束日期
+          ncOrderNo:"",//nc订单编码
         },
         orderData: [], //单据数据
         customerCode: "", //经销商编码
+        customerId: "",
       }
     },
     computed: {
@@ -210,12 +231,14 @@
         console.log(searchParams);
         var realParams = {
           search_LIKE_vreceiveCode: searchParams.vreceiveCode, //发货单号
-          search_LIKE_crmOrderNo: searchParams.crmOrderNo, //订单编码
-          search_IN_isSingin: searchParams.isSingin, //是否签收
+          search_LIKE_crmOrderNo: searchParams.crmOrderNo, //CRM订单编码
+          search_LIKE_ncOrderNo: searchParams.ncOrderNo, //NC订单编码
+          search_EQ_issign: searchParams.isSingin ? "1" : "0", //是否签收
           search_GTE_vreceiveDate: searchParams.startDate.replace(/\//g, "-"), //开始日期
           search_LTE_vreceiveDate: searchParams.endDate.replace(/\//g, "-"), //结束日期
-          search_EQ_customerCode: app.customerCode,
+          // search_EQ_customerCode: app.customerCode,
           sort: "vreceiveDate",
+          custcode:app.customerCode,//经销商编码
           pageIndex: 0,
           pageSize: 30
         };
@@ -224,59 +247,83 @@
             delete realParams[key];
           }
         });
-        var url = "http://172.192.100.21:8080/middle/receive/page";
+        // var url = "http://172.192.100.21:8080/receiveme/receive/page";
+        var url = "http://172.192.100.21:8080/receiveme/receive/page";
         var encodeRealParams = Object.keys(realParams).map(function (key) {
           var key = key;
           var value = realParams[key];
           return key + "=" + value;
         }).join("&");
         url = url + "?" + encodeRealParams;
+        showLoadingBar("正在加载");
         $.ajax({
           type: "get",
-          contentType: "application/json; charset=utf-8",
           url: url,
           // data: JSON.stringify(searchParams),
           success: function (res) {
+            if(res.status == 0){
+              alert(res.msg);
+              hideLoadingBar();
+              return;
+            }
             app.orderData = res.data.content;
             app.handlePopover();
+            hideLoadingBar();
+          },
+          error: function (res, a, b, c) {
+            console.log(res);
+            hideLoadingBar();
           }
         });
       },
       //签收
       singin: function (item) {
         var csalereceiveid = item.csalereceiveid;
-        var url = "http://172.192.100.21:8080/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
+        var url = "http://172.192.100.21:8080/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
         $.ajax({
           type: "get",
-          contentType: "application/json; charset=utf-8",
+          // contentType: "application/json; charset=utf-8",
           url: url,
           // data: JSON.stringify(searchParams),
           success: function (res) {
+            if(res.status == 0){
+              alert(res.msg);
+              return;
+            }
             summer.openWin({
               id: "doSignIn",
               url: "html/signIn/doSignIn/doSignIn.html",
               pageParam: {
-                orderData: res.data.content
+                orderData: res.data,
+                csalereceiveid:item.csalereceiveid
               }
             });
           }
         });
+
       },
       //详情
       detail: function (item) {
         var csalereceiveid = item.csalereceiveid;
-        var url = "http://172.192.100.21:8080/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
+        // var url = "http://172.192.100.21:8080/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
+        var url = "http://172.192.100.21:8080/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
         $.ajax({
           type: "get",
-          contentType: "application/json; charset=utf-8",
+          // contentType: "application/json; charset=utf-8",
           url: url,
           // data: JSON.stringify(searchParams),
           success: function (res) {
+            if(res.status == 0){
+              alert(res.msg);
+              return;
+            }
             summer.openWin({
               id: "signInDetail",
               url: "html/signIn/signInDetail/signInDetail.html",
               pageParam: {
-                orderData: orderData
+                orderData: res.data, //明细
+                signId: item.signId,
+                signremark: item.vmemo
               }
             });
           }
@@ -333,6 +380,7 @@
   summerready = function () {
     readStorage("dengluCookie", function (cook) {
       app.customerCode = cook.username;
+      app.customerId = cook.customerId;
       app.headerSearch();
     })
   }
