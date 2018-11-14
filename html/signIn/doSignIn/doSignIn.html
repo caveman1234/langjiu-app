@@ -22,6 +22,7 @@
   <script src="../../../script/vue.js"></script>
   <script src="../../../script/my/common.js"></script>
   <script src="../../../script/mui.picker.min.js"></script>
+  <script src="../../../script/pinchzoom.js"></script>
 
   <script src="../../../script/iSlider.js"></script>
   <script src="../../../script/iSlider.animate.js"></script>
@@ -126,7 +127,8 @@
       </ul>
       <ul class="mui-table-view">
         <li class="mui-table-view-cell mui-media">
-          <div id="iSlider-wrapper"></div>
+          <!-- <div id="iSlider-wrapper"></div> -->
+          <img v-for="(item,i) in base64StringArrComputed" :src="item" :index="i" width="100%">
         </li>
       </ul>
       <ul class="mui-table-view">
@@ -187,10 +189,14 @@
           var imgPath = args.imgPath;
           var compressImgPath = args.compressImgPath;
           this.base64StringArr.unshift(base64String);
-          this.imgPath.unshift(imgPath);
+          // this.imgPath.unshift(imgPath);
           //初始化图片插件
-          app.initISlider(app.imgPath);
+          // app.initISlider(app.imgPath);
           // app.initISlider(app.base64StringArrComputed);
+          
+          app.$nextTick(function(){
+            app.initZoomImages();
+          });
         }, this);
       },
       //格式化图片数据格式
@@ -215,6 +221,7 @@
           animateTime: 800, // ms
           plugins: ['dot', 'button']
         });
+        app.initZoomImages();
       },
       //确认
       confirm: function () {
@@ -253,6 +260,11 @@
             toast("错误");
             hideLoadingBar();
           }
+        });
+      },
+      initZoomImages:function(){
+        $("img").each(function () {
+            new RTP.PinchZoom($(this), {});
         });
       }
     },

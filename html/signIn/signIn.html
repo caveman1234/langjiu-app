@@ -198,7 +198,9 @@
     },
   ];
   var currentDate = new Date().getTime();
-  var startDate = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
+  var curYear = new Date().getFullYear();
+  // var startDate = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
+  var startDate = new Date(curYear + "/01/01");
   var endDate = new Date(currentDate);
   var startDateStr = startDate.getFullYear() + "/" + (startDate.getMonth() + 1) + "/" + startDate.getDate();
   var endDateStr = endDate.getFullYear() + "/" + (endDate.getMonth() + 1) + "/" + endDate.getDate();
