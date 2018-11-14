@@ -208,8 +208,8 @@
     app.images = summer.pageParam.signId.split(","); //图片
     app.remarks = summer.pageParam.signremark; //备注
     // app.initISlider();
-    app.$nextTick(function(){
+    setTimeout(function(){
       app.initZoomImages();
-    });
+    },300);
   }
 </script>
