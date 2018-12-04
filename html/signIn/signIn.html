@@ -77,8 +77,8 @@
             <div class="textArea">发货单号:</div>
             <div class="contentArea" v-clock>{{item.vreceiveCode}}</div>
             <div class="handleArea">
-              <button @tap="singin(item)" v-if="item.issign == 0" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">签收</button>
-              <button @tap="detail(item)" v-if="item.issign == 1" type="button" class="mui-btn mui-btn-outlined">详情</button>
+              <button @tap="singin(item)" v-if="item.issign == 0" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">详情</button>
+              <button @tap="detail(item)" v-if="item.issign == 1" type="button" class="mui-btn mui-btn-outlined">已签收详情</button>
             </div>
           </div>
           <div class="itemContainer">
@@ -261,8 +261,8 @@
             delete realParams[key];
           }
         });
-        // var url = "http://172.192.100.21:8080/receiveme/receive/page";
-        var url = "http://172.192.100.21:8080/receiveme/receive/page";
+        // var url = "http://172.192.100.21:8080/receiveme/receive/page";//测试
+        var url = "http://182.150.55.64:8023/receiveme/receive/page";//正式
         var encodeRealParams = Object.keys(realParams).map(function (key) {
           var key = key;
           var value = realParams[key];
@@ -295,7 +295,8 @@
       //签收
       singin: function (item) {
         var csalereceiveid = item.csalereceiveid;
-        var url = "http://172.192.100.21:8080/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
+        // var url = "http://172.192.100.21:8080/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;//测试
+        var url = "http://182.150.55.64:8023/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;//正式
         $.ajax({
           type: "get",
           // contentType: "application/json; charset=utf-8",
@@ -321,8 +322,8 @@
       //详情
       detail: function (item) {
         var csalereceiveid = item.csalereceiveid;
-        // var url = "http://172.192.100.21:8080/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
-        var url = "http://172.192.100.21:8080/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;
+        // var url = "http://172.192.100.21:8080/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;//测试
+        var url = "http://182.150.55.64:8023/receiveme/receive/list?search_EQ_csalereceiveid=" + csalereceiveid;//正式
         $.ajax({
           type: "get",
           // contentType: "application/json; charset=utf-8",

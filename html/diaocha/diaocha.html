@@ -71,7 +71,7 @@
 					<div class="title" style="text-align: right;padding-right: 15px;">操作:</div>
 					<div class="content">
 						<button v-if="item.fillState == 1" @click="look(item)" type="button" class="mui-btn mui-btn-success mui-btn-outlined">查看</button>
-						<button v-else @click="fillIn(item)" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">填写</button>
+						<button v-if="item.fillState != 1 && item.endDate > new Date().getTime()" v-else @click="fillIn(item)" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">填写</button>
 					</div>
 				</div>
 			</div>

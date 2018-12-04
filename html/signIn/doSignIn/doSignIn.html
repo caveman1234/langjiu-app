@@ -89,11 +89,11 @@
 
 
     <div class="mui-content" style="height: 100%;height:100%;background-color: #FFFFFF; padding-top: 44px;overflow: auto">
-      <ul class="mui-table-view">
+      <!-- <ul class="mui-table-view">
         <li class="mui-table-view-cell mui-media" style="height:50px;">
           <button @tap="confirm" type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="float:right;">确认签收</button>
         </li>
-      </ul>
+      </ul> -->
       <ul v-for="(item,index) in orderData" :key="index" class="mui-table-view">
         <li class="mui-table-view-cell mui-media sigindetail">
           <div class="siginHeader">签收明细:</div>
@@ -120,15 +120,24 @@
         </li>
       </ul>
       <ul class="mui-table-view">
-        <li class="mui-table-view-cell mui-media">
-          <div class="siginHeader ">请上传签收单照片</div>
-          <button @tap="takePhoto" type="button" class="mui-btn mui-btn-primary mui-btn-outlined" style="float:right;">拍照</button>
+        <li class="mui-table-view-cell mui-media clearfix">
+          <span class="siginHeader " style="float:left;">请上传签收单照片</span>
+          <span style="position: absolute;right: 100px;">
+            <button @tap="takePhoto" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">拍照</button>
+          </span>
+          <span style="position: absolute;right: 0;">
+            <button @tap="confirm" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">确认签收</button>
+          </span>
         </li>
       </ul>
       <ul class="mui-table-view">
         <li class="mui-table-view-cell mui-media">
           <!-- <div id="iSlider-wrapper"></div> -->
-          <img v-for="(item,i) in base64StringArrComputed" :src="item" :index="i" width="100%">
+          <div v-for="(item,i) in base64StringArrComputed" :index="i" style="margin-top: 10px;">
+            <button @tap="deleteItem(item,i)" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">删除</button>
+            <img :src="item" width="100%">
+          </div>
+
         </li>
       </ul>
       <ul class="mui-table-view">
@@ -141,7 +150,7 @@
           </form>
         </li>
       </ul>
-      
+
 
 
 
@@ -172,7 +181,7 @@
         orderData: {},
         remarks: "", //备注
         customerCode: "", //经销商编码
-        csalereceiveid:"",//单据id
+        csalereceiveid: "", //单据id
       }
     },
     computed: {
@@ -193,8 +202,8 @@
           //初始化图片插件
           // app.initISlider(app.imgPath);
           // app.initISlider(app.base64StringArrComputed);
-          
-          app.$nextTick(function(){
+
+          app.$nextTick(function () {
             app.initZoomImages();
           });
         }, this);
@@ -229,43 +238,67 @@
           toast("请拍照");
           return;
         }
-        var params = {
-          // custcode:app.customerCode,//经销商编码
-          csalereceiveid: app.csalereceiveid,
-          picId: this.base64StringArr.toString(),
-          vmemo: this.remarks,
-          soSalesignBList: [], //子表明细
-        }
-        console.log(params);
-        var url = "http://172.192.100.21:8080/receiveme/receive/sign";
-        showLoadingBar("正在上传");
+        mui.confirm(
+          "此操作不可逆，请核对数据是否正确，图片是否清晰。", "",
+          ["确认签收", "取消签收"],
+          function (obj) {
+            switch (obj.index) {
+              case 0:
+                //是
+                var params = {
+                  // custcode:app.customerCode,//经销商编码
+                  csalereceiveid: app.csalereceiveid,
+                  picId: app.base64StringArr.toString(),
+                  vmemo: app.remarks,
+                  soSalesignBList: [], //子表明细
+                }
+                console.log(params);
+                // var url = "http://172.192.100.21:8080/receiveme/receive/sign";//测试
+                var url = "http://182.150.55.64:8023/receiveme/receive/sign";//正式
+                showLoadingBar("正在上传");
 
-        $.ajax({
-          type: "post",
-          contentType: "application/json; charset=utf-8",
-          url: url,
-          data: JSON.stringify(params),
-          success: function (res) {
-            if(res.status == 0){
-              alert(res.msg);
-              return;
+                $.ajax({
+                  type: "post",
+                  contentType: "application/json; charset=utf-8",
+                  url: url,
+                  data: JSON.stringify(params),
+                  success: function (res) {
+                    if (res.status == 0) {
+                      alert(res.msg);
+                      return;
+                    }
+                    toast("签收成功");
+                    hideLoadingBar();
+                    summer.closeToWin({
+                      id: "main"
+                    });
+                  },
+                  error: function () {
+                    toast("错误");
+                    hideLoadingBar();
+                  }
+                });
+                break;
+              case 1:
+                //否
+                break;
             }
-            toast("签收成功");
-            hideLoadingBar();
-            summer.closeToWin({
-              id: "main"
-            });
           },
-          error: function () {
-            toast("错误");
-            hideLoadingBar();
-          }
+        );
+        return;
+
+      },
+      initZoomImages: function () {
+        $("img").each(function () {
+          new RTP.PinchZoom($(this), {});
         });
       },
-      initZoomImages:function(){
-        $("img").each(function () {
-            new RTP.PinchZoom($(this), {});
-        });
+      //删除图片
+      deleteItem: function (item, i) {
+        // this.base64StringArr = this.base64StringArr.filter(function(v){
+        //   return v !== item;
+        // });
+        this.base64StringArr.splice(i, 1);
       }
     },
     mounted: function () {
