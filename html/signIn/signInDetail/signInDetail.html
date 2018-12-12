@@ -114,6 +114,10 @@
             <div class="item-name">发货数量(件):</div>
             <div class="item-value" v-clock>{{item.nastnumber}}</div>
           </div>
+          <div class="item-content">
+            <div class="item-name">签收日期:</div>
+            <div class="item-value" v-clock>{{signdate}}</div>
+          </div>
         </li>
       </ul>
       <ul class="mui-table-view">
@@ -162,7 +166,8 @@
       return {
         orderData: [],
         images: [],
-        remarks: ""
+        remarks: "",
+        signdate:""
       }
     },
     computed: {
@@ -207,6 +212,7 @@
     app.orderData = summer.pageParam.orderData; //[]
     app.images = summer.pageParam.signId.split(","); //图片
     app.remarks = summer.pageParam.signremark; //备注
+    app.signdate = summer.pageParam.signdate; //备注
     // app.initISlider();
     setTimeout(function(){
       app.initZoomImages();

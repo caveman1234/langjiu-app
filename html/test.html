@@ -54,7 +54,7 @@
 
 </html>
 <script type="text/javascript">
-	window.currentVersion = "2.0.30";
+	window.currentVersion = "2.0.41";
 	summerready = function() {
 		readStorage("loginmsg", function(data) {
 			if(data.uid && data.pwd) {
@@ -141,7 +141,7 @@
 							updateLog += "<div style='text-align: left;'>需要更新后才能使用:</div>";
 						}
 						updateLog += data.updatelog;
-						mui.confirm(updateLog, '发现新版本', ["更新", "暂时不"], function(e) {
+						mui.confirm(updateLog, '发现新版本', ["更新", "暂不"], function(e) {
 							if(e.index == 0) {
 								app.update(data);
 								return;

@@ -101,6 +101,10 @@
             <div class="textArea">是否已签收:</div>
             <div class="contentArea" v-clock>{{item.issign == 1 ? "是" : "否"}}</div>
           </div>
+          <div v-if="item.issign == 1" class="itemContainer">
+            <div class="textArea">签收日期:</div>
+            <div class="contentArea" v-clock>{{item.signdate}}</div>
+          </div>
         </li>
       </ul>
       <div v-if="orderData.length === 0" style="text-align:center;color:gray;font-size:12px;">无数据,请搜索</div>
@@ -340,7 +344,8 @@
               pageParam: {
                 orderData: res.data, //明细
                 signId: item.signId,
-                signremark: item.vmemo
+                signremark: item.vmemo,
+                signdate: item.signdate,
               }
             });
           }

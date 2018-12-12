@@ -120,13 +120,19 @@
         </li>
       </ul>
       <ul class="mui-table-view">
+        <li @tap="siginDateFun" class="mui-table-view-cell mui-media clearfix">
+          <span class="siginHeader " style="float:left;">签收日期：</span>
+          <span style="line-height: 30px;">{{siginDate}}</span>
+        </li>
+      </ul>
+      <ul class="mui-table-view">
         <li class="mui-table-view-cell mui-media clearfix">
-          <span class="siginHeader " style="float:left;">请上传签收单照片</span>
+          <span class="siginHeader " style="float:left;">请上传签收单照片:</span>
           <span style="position: absolute;right: 100px;">
-            <button @tap="takePhoto" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">拍照</button>
+            <div @tap="takePhoto" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">拍照</div>
           </span>
           <span style="position: absolute;right: 0;">
-            <button @tap="confirm" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">确认签收</button>
+            <div @tap="confirm"  class="mui-btn mui-btn-primary mui-btn-outlined">确认签收</div>
           </span>
         </li>
       </ul>
@@ -137,7 +143,6 @@
             <button @tap="deleteItem(item,i)" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">删除</button>
             <img :src="item" width="100%">
           </div>
-
         </li>
       </ul>
       <ul class="mui-table-view">
@@ -150,8 +155,6 @@
           </form>
         </li>
       </ul>
-
-
 
 
     </div>
@@ -171,7 +174,13 @@
     signInImages: ["https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=2e3ab7ac17fd80c48edf3cb05db91569&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b6ca556079da0000009af03336db.jpg%40900w_1l_2o_100sh.jpg", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966843984&di=33ee64fb0a74a892b56efb69d49173c2&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b0d5565add936ac7251be83e7d81.jpg%401280w_1l_2o_100sh.jpg"],
     remarks: "111备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
   };
-
+  var curDate = new Date();
+  var curDateStr = "";
+  try{
+    curDateStr = curDate.getFullYear() + "/" + (curDate.getMonth() + 1) + "/" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes() ;
+  }catch(e){
+    alert("此手机非标，请换手机。");
+  }
   var app = new Vue({
     el: '#appContainer',
     data: function () {
@@ -182,6 +191,7 @@
         remarks: "", //备注
         customerCode: "", //经销商编码
         csalereceiveid: "", //单据id
+        siginDate:(curDate.getFullYear() + "/" + (curDate.getMonth() + 1) + "/" + curDate.getDate() + " " + curDate.getHours() + ":" + curDate.getMinutes()),//签收日期
       }
     },
     computed: {
@@ -192,6 +202,18 @@
       }
     },
     methods: {
+      siginDateFun: function () {
+        var _this = this;
+        var curDate = new Date();
+        var dtPicker = new mui.DtPicker({
+          type: "datetime",
+          // beginDate: beginDate && new Date(beginDate),
+          endDate:new Date(curDateStr)
+        });
+        dtPicker.show(function (obj) {
+          _this.siginDate = obj.value.replace(/-/g, "/")
+        });
+      },
       //拍照
       takePhoto: function () {
         openCamera(function (args, base64String) {
@@ -233,7 +255,8 @@
         app.initZoomImages();
       },
       //确认
-      confirm: function () {
+      confirm: function (e) {
+        e.preventDefault();
         if (this.base64StringArr.length === 0) {
           toast("请拍照");
           return;
@@ -251,8 +274,9 @@
                   picId: app.base64StringArr.toString(),
                   vmemo: app.remarks,
                   soSalesignBList: [], //子表明细
+                  signDate:app.siginDate,//签收日期
                 }
-                console.log(params);
+                // console.log(params);
                 // var url = "http://172.192.100.21:8080/receiveme/receive/sign";//测试
                 var url = "http://182.150.55.64:8023/receiveme/receive/sign";//正式
                 showLoadingBar("正在上传");
@@ -273,8 +297,17 @@
                       id: "main"
                     });
                   },
-                  error: function () {
-                    toast("错误");
+                  error: function (e) {
+                    var base64StringArr = app.base64StringArr.map(function(v){
+                      return v.slice(0,5);
+                    });
+                    var errorParams = {
+                      csalereceiveid:params.csalereceiveid,
+                      picId:base64StringArr.toString(),
+                      vmemo:params.vmemo,
+                      signDate:params.signDate,
+                    };
+                    alert("错误:" + JSON.stringify(e || "无返回") + JSON.stringify(errorParams));
                     hideLoadingBar();
                   }
                 });
@@ -283,7 +316,7 @@
                 //否
                 break;
             }
-          },
+          }
         );
         return;
 
@@ -299,7 +332,7 @@
         //   return v !== item;
         // });
         this.base64StringArr.splice(i, 1);
-      }
+      },
     },
     mounted: function () {
 
