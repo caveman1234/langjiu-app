@@ -23,20 +23,20 @@ $(document).ready(function() {
 });
 
 //接口基地址 json参数 成功回调 返回回调 是否显示加载中
-function doPost(adresses, para, successFun, errorFun, showLoding, getorpost) {
+function doPost(adresses, para, successFun, errorFun, showLoding, getorpost,isFullUrl) {
 	if(summer.getSysInfo().systemType == "android") {
 		//Android 6以上版本使用此API时需要手动申请权限
 		summer.getPermission(["android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"], function(args) {
-			doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost);
+			doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost,isFullUrl);
 		}, function(args) {
 			alert("没有获取到相应权限"); //失败返回illegal access
 		});
 	} else {
-		doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost);
+		doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost,isFullUrl);
 	}
 }
 
-function doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost) {
+function doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost,isFullUrl) {
 	//設置延遲超時時間
 	window.cordovaHTTP.settings = {
 		timeout: 5000
@@ -49,7 +49,7 @@ function doPost_back(adresses, para, successFun, errorFun, showLoding, getorpost
 	if(showLoding) {
 		showLoadingBar();
 	}
-	var adress = baseAdress + adresses;
+	var adress = isFullUrl ? adresses : (baseAdress + adresses);
 	summer.ajax({
 		type: getorpost || "post",
 		url: adress,
@@ -201,10 +201,59 @@ function updateAppBack(url){
 		alert(ret.msg);
 	})
 }
-function openCamera(cb,ctx){
+//打开相机
+function openCamera(cb,ctx,isAlbum){
 	if(summer.getSysInfo().systemType == "android") {
 		//Android 6以上版本使用此API时需要手动申请权限
 		summer.getPermission(["android.permission.CAMERA","android.permission.READ_PHONE_STATE","android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_EXTERNAL_STORAGE","android.permission.WRITE_EXTERNAL_STORAGE"], function(args) {
+			//打开相册
+			if(isAlbum){
+				summer.openPhotoAlbum({
+					compressionRatio:0.7,
+					callback:function(args){
+						summer.fileToBase64({
+							"filePath" : args.compressImgPath,
+							"callback" : function(ret){
+									var base64String = ret.result;
+									cb.call(ctx,args,base64String);
+							}
+						})
+					}
+				});
+			}else{
+				summer.openCamera({
+					compressionRatio:0.7,
+					cameraType:"custom",
+					orientation:"rear",
+					callback:function(args){
+						summer.fileToBase64({
+							"filePath" : args.compressImgPath,
+							"callback" : function(ret){
+									var base64String = ret.result;
+									cb.call(ctx,args,base64String);
+							}
+						})
+					}
+				});
+			}
+		}, function(args) {
+			alert("没有获取到相应权限"); //失败返回illegal access
+		});
+	} else {
+		if(isAlbum){
+			summer.openPhotoAlbum({
+				compressionRatio:0.7,
+				callback:function(args){
+					summer.fileToBase64({
+						"filePath" : args.compressImgPath,
+						"callback" : function(ret){
+								var base64String = ret.result;
+								cb.call(ctx,args,base64String);
+						}
+					})
+				}
+			});
+		}else{
 			summer.openCamera({
 				compressionRatio:0.7,
 				cameraType:"custom",
@@ -219,23 +268,6 @@ function openCamera(cb,ctx){
 					})
 				}
 			});
-		}, function(args) {
-			alert("没有获取到相应权限"); //失败返回illegal access
-		});
-	} else {
-		summer.openCamera({
-			compressionRatio:0.7,
-			cameraType:"custom",
-			orientation:"rear",
-			callback:function(args){
-				summer.fileToBase64({
-					"filePath" : args.compressImgPath,
-					"callback" : function(ret){
-							var base64String = ret.result;
-							cb.call(ctx,args,base64String);
-					}
-				})
-			}
-		});
+		}
 	}
 }
